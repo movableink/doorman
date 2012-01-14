@@ -1,0 +1,13 @@
+{
+  "name": "oauth-proxy",
+  "version": "0.0.1",
+  "description": "Provides an authentication/authorization layer in front of other http/websocket services",
+  "keywords": ["oauth", "proxy"],
+  "homepage": "https://github.com/mnutt/oauth-proxy",
+  "author": {"name": "Michael Nutt", "url": "http://nuttnet.net"},
+  "repository": {"type": "git", "url": "http://github.com/mnutt/oauth-proxy.git"},
+  "dependencies": {
+    "everyauth": "0.2.27",
+    "http-proxy": "0.8.0"
+  }
+}
