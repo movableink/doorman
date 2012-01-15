@@ -1,4 +1,5 @@
 var http = require('http');
+var express = require('express');
 var connect = require('connect');
 var conf = require('./conf');
 var everyauth = require('everyauth');
@@ -10,38 +11,45 @@ var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 github.setup(everyauth);
 
 function userCanAccess(req) {
-  if(req.url.match(/^\/auth\//)) { return true; }
   var auth = req.session.auth;
   if(!auth) {
     console.log("User rejected because they haven't authenticated.");
     return false;
   }
 
-  if(github.auth(auth)) { return true; }
+  for(var authType in req.session.auth) {
+    if(everyauth[authType].authorize(auth)) { return true; }
+  }
 
   return false;
 }
 
 function checkUser(req, res, next) {
   if(userCanAccess(req)) {
-    next();
+    proxyMiddleware(req, res, next);
   } else {
-    res.writeHead(302, { 'Location': "/auth/github" });
-    res.end();
+    next();
   }
+}
+
+function loginPage(req, res, next) {
+  res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled });
 }
 
 // Store the middleware since we use it in the websocket proxy
 var connectSession = connect.session({secret: conf.sessionSecret,
                                       fingerprint: function(req) { return "default"; }});
 
-var app = connect(
-  connect.cookieParser(),
+var proxyMiddleware = proxy.middleware();
+
+var app = express.createServer(
   connect.logger(),
+  connect.cookieParser(),
   connectSession,
-  everyauth.middleware(),
   checkUser,
-  proxy.middleware()
+  everyauth.middleware(),
+  connect.static(__dirname + "/public", {maxAge: 30 * 24 * 60 * 60 * 1000 * 0 }),
+  loginPage
 );
 
 app.on('upgrade', function(req, socket, head) {
