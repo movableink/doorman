@@ -5,6 +5,7 @@ var conf = require('./conf');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
+var log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 
@@ -13,12 +14,12 @@ github.setup(everyauth);
 function userCanAccess(req) {
   var auth = req.session.auth;
   if(!auth) {
-    console.log("User rejected because they haven't authenticated.");
+    log.debug("User rejected because they haven't authenticated.");
     return false;
   }
 
   for(var authType in req.session.auth) {
-    if(everyauth[authType].authorize(auth)) { return true; }
+    if(everyauth[authType] && everyauth[authType].authorize(auth)) { return true; }
   }
 
   return false;
@@ -43,7 +44,7 @@ var connectSession = connect.session({secret: conf.sessionSecret,
 var proxyMiddleware = proxy.middleware();
 
 var app = express.createServer(
-  connect.logger(),
+  log.middleware(),
   connect.cookieParser(),
   connectSession,
   checkUser,
@@ -64,3 +65,5 @@ app.on('upgrade', function(req, socket, head) {
 });
 
 app.listen(conf.port);
+
+log.notice("Doorman on duty, listening on port " + conf.port + " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".");
