@@ -2,30 +2,12 @@ var http = require('http');
 var connect = require('connect');
 var conf = require('./conf');
 var everyauth = require('everyauth');
-var httpProxy = require('http-proxy');
+var Proxy = require('./lib/proxy');
+var github = require('./lib/modules/github');
 
-everyauth.github
-  .appId(conf.github.appId)
-  .appSecret(conf.github.appSecret)
-  .findOrCreateUser( function (sess, accessToken, accessTokenExtra, ghUser) {
-    var p = this.Promise();
-    this.oauth.get(this.apiHost() + '/organizations', accessToken, function (err, data) {
-      if (err) return p.fail(err);
-      ghUser.organizations = JSON.parse(data).organizations;
-      p.fulfill(ghUser);
-    })
-    return p;
-  })
-  .redirectPath('/');
+var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 
-var proxy = new (httpProxy.RoutingProxy)();
-
-function doProxy(req, res, next) {
-  proxy.proxyRequest(req, res, {
-    host: 'localhost',
-    port: 1081
-  });
-}
+github.setup(everyauth);
 
 function userCanAccess(req) {
   if(req.url.match(/^\/auth\//)) { return true; }
@@ -35,12 +17,7 @@ function userCanAccess(req) {
     return false;
   }
 
-  for(var i = 0; i < auth.github.user.organizations.length; i++) {
-    var organization = auth.github.user.organizations[i];
-    if(organization.login == conf.github.requiredOrganization) { return true; }
-  }
-
-  console.log("User rejected because they aren't in the '" + conf.github.requiredOrganization + "' organization.");
+  if(github.auth(auth)) { return true; }
 
   return false;
 }
@@ -54,29 +31,28 @@ function checkUser(req, res, next) {
   }
 }
 
-var connectSession = connect.session({secret: conf.secret, fingerprint: function(req) { return "default"; }})
+// Store the middleware since we use it in the websocket proxy
+var connectSession = connect.session({secret: conf.sessionSecret,
+                                      fingerprint: function(req) { return "default"; }});
 
-var app = connect.createServer(
+var app = connect(
   connect.cookieParser(),
   connect.logger(),
   connectSession,
   everyauth.middleware(),
   checkUser,
-  doProxy
+  proxy.middleware()
 );
 
 app.on('upgrade', function(req, socket, head) {
   connect.cookieParser()(req, new http.ServerResponse(req), function() {});
   connectSession(req, new http.ServerResponse(req), function() {
     if(userCanAccess(req)) {
-      proxy.proxyWebSocketRequest(req, socket, head, {
-        host: 'localhost',
-        port: 1081
-      });
+      proxy.proxyWebSocketRequest(req, socket, head);
     } else {
       socket.end();
     }
   });
 });
 
-app.listen(3012);
+app.listen(conf.port);
