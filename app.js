@@ -34,6 +34,8 @@ function checkUser(req, res, next) {
 }
 
 function loginPage(req, res, next) {
+  req.session.redirectTo = req.originalUrl;
+  req.session.save();
   res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled });
 }
 
