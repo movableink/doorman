@@ -32,6 +32,14 @@ we need to determine which authenticated users to let in. (see `lib/modules`) So
 far only the Github module is complete, but others are fairly easy.
 
 
+Acknowledgements
+----------------
+
+Doorman is pretty much just everyauth (https://github.com/bnoguchi/everyauth) and
+node-http-proxy (https://github.com/nodejitsu/node-http-proxy) grafted together,
+and those two projects do most of the heavy lifting.
+
+
 License
 -------
 
