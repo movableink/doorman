@@ -1,9 +1,4 @@
-h1 Sorry
+h1 Uh oh
 
-h2 Looks like we can't access your account on #{currentProvider}.  Maybe try a different one?
+h2 We had a problem.  Perhaps something is misconfigured, or the provider is down.
 
-#provider-list
-  each provider, name in providers
-    a.button(href=provider._entryPath)
-      img(src="/_doorman/icons/#{name}.ico.png")
-      | Sign in with #{provider.title || name}

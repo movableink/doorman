@@ -5,11 +5,15 @@ var conf = require('./conf');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
+var google = require('./lib/modules/google');
 var log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
+var proxyMiddleware = proxy.middleware();
 
+// Set up our auth strategies
 github.setup(everyauth);
+google.setup(everyauth);
 
 function userCanAccess(req) {
   var auth = req.session.auth;
@@ -43,8 +47,6 @@ function loginPage(req, res, next) {
 var connectSession = connect.session({secret: conf.sessionSecret,
                                       fingerprint: function(req) { return "default"; }});
 
-var proxyMiddleware = proxy.middleware();
-
 var app = express.createServer(
   log.middleware(),
   connect.cookieParser(),
@@ -55,6 +57,7 @@ var app = express.createServer(
   loginPage
 );
 
+// WebSockets are also authenticated
 app.on('upgrade', function(req, socket, head) {
   connect.cookieParser()(req, new http.ServerResponse(req), function() {});
   connectSession(req, new http.ServerResponse(req), function() {
@@ -64,6 +67,16 @@ app.on('upgrade', function(req, socket, head) {
       socket.destroy();
     }
   });
+});
+
+// Uncaught error states
+app.on('error', function(req, res, next) {
+  res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
+});
+
+everyauth.everymodule.moduleErrback(function(err, data) {
+  var res = data.res;
+  res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
 });
 
 app.listen(conf.port);
