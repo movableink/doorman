@@ -61,7 +61,7 @@ app.on('upgrade', function(req, socket, head) {
     if(userCanAccess(req)) {
       proxy.proxyWebSocketRequest(req, socket, head);
     } else {
-      socket.end();
+      socket.destroy();
     }
   });
 });
