@@ -2,6 +2,7 @@
 
 html(lang="en")
   head
+    meta(name="viewport", content="width = device-width")
     title= ["Doorman ", pageTitle].join(" | ")
     style
       body {
@@ -25,6 +26,8 @@ html(lang="en")
         text-indent: -10000px;
         background: url(/_doorman/images/logo.jpg) top left no-repeat;
       }
+
+      #small-logo { display: none; padding-top: 30px; }
 
       #main {
         padding-top: 100px;
@@ -72,7 +75,7 @@ html(lang="en")
         font-size: 20px;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         padding: 12px 24px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         -webkit-border-radius: 6px;
         -moz-border-radius: 6px;
         border-radius: 6px;
@@ -105,6 +108,13 @@ html(lang="en")
         margin-bottom: -3px;
       }
 
+      @media screen and (max-width: 776px) {
+        #title { display: none; }
+        #main { margin: 0 auto; padding-top: 0px; }
+        #small-logo { display: block; }
+        #small-logo img { width: 100%; }
+      }
+
 
   body
     #container
@@ -112,3 +122,5 @@ html(lang="en")
         #logo Doorman
       #main
         != body
+        #small-logo
+          img(src="/_doorman/images/logo.jpg")
