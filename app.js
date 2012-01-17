@@ -75,8 +75,8 @@ app.on('error', function(req, res, next) {
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  var res = data.res;
-  res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
+  console.log("ERROR: " + err.message);
+  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
 });
 
 app.listen(conf.port);
