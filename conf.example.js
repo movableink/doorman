@@ -12,7 +12,6 @@ module.exports = {
   // Needs a trailing slash
   logDir: '/var/log/doorman/',
   logFilename: 'doorman.log',
-  logging: 'true',
 
   modules: {
     // Register a new oauth app on Github at
