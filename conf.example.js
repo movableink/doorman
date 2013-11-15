@@ -9,6 +9,10 @@ module.exports = {
 
   sessionSecret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4', // change me
 
+  // Needs a trailing slash
+  logDir: '/var/log/doorman/',
+  logFilename: 'doorman.log',
+
   modules: {
     // Register a new oauth app on Github at
     // https://github.com/account/applications/new
