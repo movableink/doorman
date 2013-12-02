@@ -12,8 +12,12 @@ var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 var proxyMiddleware = proxy.middleware();
 
 // Set up our auth strategies
-github.setup(everyauth);
-google.setup(everyauth);
+if (conf.modules.github) {
+  github.setup(everyauth);
+}
+if (conf.modules.google) {
+  google.setup(everyauth);
+}
 
 function userCanAccess(req) {
   var auth = req.session.auth;
