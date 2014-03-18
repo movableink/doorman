@@ -1,6 +1,7 @@
 module.exports = {
   // port to listen on
   port: 8085,
+  hostname: 'https://example.com',
 
   proxyTo: {
     host: 'localhost',
@@ -15,6 +16,8 @@ module.exports = {
     github: {
       appId: 'YOUR-GITHUB-APP-ID',
       appSecret: 'YOUR-GITHUB-APP-SECRET',
+      entryPath: '/oauth/github',
+      callbackPath: '/oauth/github/callback',
       requiredOrganization: 'YOUR-ORGANIZATION-NAME' // short organization name
     },
 
