@@ -9,6 +9,7 @@ module.exports = {
   },
 
   sessionSecret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4', // change me
+  sessionCookieMaxAge: 60 * 60 * 4 * 1000, // milliseconds until session cookie expires (or "false" to not expire)
 
   modules: {
     // Register a new oauth app on Github at

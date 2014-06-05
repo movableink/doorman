@@ -48,7 +48,8 @@ function loginPage(req, res, next) {
 }
 
 // Store the middleware since we use it in the websocket proxy
-var connectSession = connect.session({secret: conf.sessionSecret,
+var connectSession = connect.session({cookie: { maxAge: conf.sessionCookieMaxAge },
+                                      secret: conf.sessionSecret,
                                       fingerprint: function(req) { return "default"; }});
 
 var app = express.createServer(
