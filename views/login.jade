@@ -1,9 +1,12 @@
-h1 How may I help you?
+extends layout
 
-h2 I'm with:
+block content
+  h1 How may I help you?
 
-#provider-list
-  each provider, name in providers
-    a.button(href=provider._entryPath)
-      img(src="/_doorman/icons/#{name}.ico.png")
-      | Sign in with #{provider.title || name}
+  h2 I'm with:
+
+  #provider-list
+    each provider, name in providers
+      a.button(href=provider._entryPath)
+        img(src="/_doorman/icons/#{name}.ico.png")
+        | Sign in with #{provider.title || name}

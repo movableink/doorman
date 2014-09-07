@@ -1,10 +1,11 @@
-var http = require('http');
-var express = require('express');
-var connect = require('connect');
 try { var conf = require('./conf'); } catch(e) {
   console.log("Missing conf.js.  Please copy conf.example.js to conf.js and edit it.");
   process.exit(1);
 }
+
+var http = require('http');
+var express = require('express');
+var session = require('cookie-session');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
@@ -51,24 +52,25 @@ function loginPage(req, res, next) {
   }
 
   req.session.redirectTo = req.originalUrl;
-  req.session.save();
   res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled });
 }
 
 // Store the middleware since we use it in the websocket proxy
-var connectSession = connect.session({cookie: { maxAge: conf.sessionCookieMaxAge },
-                                      secret: conf.sessionSecret,
-                                      fingerprint: function(req) { return "default"; }});
+var sessionOptions = {
+  cookie: { maxAge: conf.sessionCookieMaxAge },
+  secret: conf.sessionSecret,
+  name: '__doorman',
+};
+var doormanSession = session(sessionOptions);
 
-var app = express.createServer(
-  log.middleware(),
-  connect.cookieParser(),
-  connectSession,
-  checkUser,
-  everyauth.middleware(),
-  connect.static(__dirname + "/public", {maxAge: 30 * 24 * 60 * 60 * 1000 * 0 }),
-  loginPage
-);
+var app = express();
+
+app.use(log.middleware());
+app.use(doormanSession);
+app.use(checkUser);
+app.use(everyauth.middleware());
+app.use(express.static(__dirname + "/public", {maxAge: 0 }));
+app.use(loginPage);
 
 // WebSockets are also authenticated
 app.on('upgrade', function(req, socket, head) {
