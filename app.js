@@ -4,6 +4,7 @@ try { var conf = require('./conf'); } catch(e) {
 }
 
 var http = require('http');
+var https = require('https');
 var express = require('express');
 var session = require('cookie-session');
 var everyauth = require('everyauth');
@@ -72,18 +73,6 @@ app.use(everyauth.middleware());
 app.use(express.static(__dirname + "/public", {maxAge: 0 }));
 app.use(loginPage);
 
-// WebSockets are also authenticated
-app.on('upgrade', function(req, socket, head) {
-  connect.cookieParser()(req, new http.ServerResponse(req), function() {});
-  connectSession(req, new http.ServerResponse(req), function() {
-    if(userCanAccess(req)) {
-      proxy.proxyWebSocketRequest(req, socket, head);
-    } else {
-      socket.destroy();
-    }
-  });
-});
-
 // Uncaught error states
 app.on('error', function(err) {
   console.log(err);
@@ -93,6 +82,19 @@ everyauth.everymodule.moduleErrback(function(err, data) {
   data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
 });
 
-app.listen(conf.port);
+var server = http.createServer(app);
+
+// WebSockets are also authenticated
+server.on('upgrade', function(req, socket, head) {
+  doormanSession(req, new http.ServerResponse(req), function() {
+    if(userCanAccess(req)) {
+      proxy.proxyWebSocketRequest(req, socket, head);
+    } else {
+      socket.destroy();
+    }
+  });
+});
+
+server.listen(conf.port);
 
 log.notice("Doorman on duty, listening on port " + conf.port + " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".");

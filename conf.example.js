@@ -1,7 +1,6 @@
 module.exports = {
   // port to listen on
   port: 8085,
-  hostname: 'https://example.com',
 
   proxyTo: {
     host: 'localhost',
