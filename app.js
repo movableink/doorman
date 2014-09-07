@@ -1,7 +1,10 @@
 var http = require('http');
 var express = require('express');
 var connect = require('connect');
-var conf = require('./conf');
+try { var conf = require('./conf'); } catch(e) {
+  console.log("Missing conf.js.  Please copy conf.example.js to conf.js and edit it.");
+  process.exit(1);
+}
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
@@ -80,8 +83,8 @@ app.on('upgrade', function(req, socket, head) {
 });
 
 // Uncaught error states
-app.on('error', function(req, res, next) {
-  res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
+app.on('error', function(err) {
+  console.log(err);
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {

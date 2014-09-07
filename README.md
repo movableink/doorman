@@ -21,6 +21,7 @@ Installation
 
   * `npm install`
   * copy conf.example.js to conf.js and modify
+  * `npm start`
 
 
 Strategies
