@@ -2,10 +2,17 @@
   "name": "doorman",
   "version": "0.2.0",
   "description": "Provides an authentication/authorization layer in front of other http/websocket services",
-  "keywords": ["oauth", "proxy", "doorman"],
+  "keywords": [
+    "oauth",
+    "proxy",
+    "doorman"
+  ],
   "homepage": "https://github.com/movableink/doorman",
-  "author": {"name": "Michael Nutt", "url": "http://nuttnet.net"},
-  "repository": {"type": "git", "url": "http://github.com/movableink/doorman.git"},
+  "author": "Michael Nutt (michael@nuttnet.net)",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/movableink/doorman.git"
+  },
   "scripts": {
     "start": "node app.js"
   },
@@ -16,5 +23,11 @@
     "cookie-session": "1.0.2",
     "jade":           "1.6.0",
     "winston":        "0.5.9"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/movableink/doorman/issues"
+  },
+  "main": "app.js",
+  "devDependencies": {},
+  "license": "MIT"
 }
