@@ -6,6 +6,9 @@
   "homepage": "https://github.com/movableink/doorman",
   "author": {"name": "Michael Nutt", "url": "http://nuttnet.net"},
   "repository": {"type": "git", "url": "http://github.com/movableink/doorman.git"},
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "everyauth":   "0.4.6",
     "http-proxy":  "0.8.0",
