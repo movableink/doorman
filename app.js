@@ -25,15 +25,21 @@ if (conf.modules.google) {
 }
 
 function userCanAccess(req) {
-  var auth = req.session.auth;
+  var auth = req.session && req.session.auth;
   if(!auth) {
     log.debug("User rejected because they haven't authenticated.");
     return false;
   }
 
   for(var authType in req.session.auth) {
-    if(everyauth[authType] && everyauth[authType].authorize(auth)) { return true; }
+    if(everyauth[authType] && everyauth[authType].authorize(auth)) {
+      return true;
+    }
   }
+
+  // User had an auth, but it wasn't an acceptable one
+  req.session.auth = null;
+  log.debug("User rejected because their oauth was not in allowed group");
 
   return false;
 }
