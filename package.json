@@ -1,5 +1,5 @@
 {
-  "name": "doorman",
+  "name": "doorman-proxy",
   "version": "0.2.0",
   "description": "Provides an authentication/authorization layer in front of other http/websocket services",
   "keywords": [
