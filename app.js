@@ -42,6 +42,11 @@ function checkUser(req, res, next) {
 }
 
 function loginPage(req, res, next) {
+  if(req.query.error) {
+    res.render('error.jade', { pageTitle: "An error occurred.", error: "The authentication method reports: " + req.query.error_description });
+    return
+  }
+
   req.session.redirectTo = req.originalUrl;
   req.session.save();
   res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled });
@@ -76,12 +81,11 @@ app.on('upgrade', function(req, socket, head) {
 
 // Uncaught error states
 app.on('error', function(req, res, next) {
-  res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
+  res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  console.log("ERROR: " + err.message);
-  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.' });
+  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
 });
 
 app.listen(conf.port);
