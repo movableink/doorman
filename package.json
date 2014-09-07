@@ -1,6 +1,6 @@
 {
   "name": "doorman",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Provides an authentication/authorization layer in front of other http/websocket services",
   "keywords": ["oauth", "proxy", "doorman"],
   "homepage": "https://github.com/movableink/doorman",
