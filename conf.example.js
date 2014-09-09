@@ -26,7 +26,7 @@ module.exports = {
     google: {
       appId: 'YOUR-GOOGLE-CLIENT-ID',
       appSecret: 'YOUR-GOOGLE-CLIENT-SECRET',
-      requiredDomain: 'yourdomain.com'
+      requiredDomain: ['yourdomain.com', 'anotherdomain.com']
     }
   }
 };
