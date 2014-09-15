@@ -10,6 +10,14 @@ module.exports = {
   sessionSecret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4', // change me
   sessionCookieMaxAge: 4 * 24 * 60 * 60 * 1000, // milliseconds until session cookie expires (or "false" to not expire)
 
+  // Paths that bypass doorman and do not need any authentication.  Matches on the
+  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
+  // publicPaths: [
+  //   '/about/',
+  //   '/robots.txt',
+  //   /(.*?).png$/
+  // ],
+
   modules: {
     // Register a new oauth app on Github at
     // https://github.com/account/applications/new

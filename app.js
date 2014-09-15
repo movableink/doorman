@@ -44,8 +44,23 @@ function userCanAccess(req) {
   return false;
 }
 
+function isPublicPath(req) {
+  if(!conf.publicPaths) { return false; }
+
+  for(var i = 0, len = conf.publicPaths.length; i < len; i++) {
+    var path = conf.publicPaths[i];
+    if(typeof(path) == 'object') { // regex
+      if(req.url.match(path)) { return true; }
+    } else {
+      if(req.url.indexOf(path) == 0) { return true; }
+    }
+  }
+
+  return false;
+}
+
 function checkUser(req, res, next) {
-  if(userCanAccess(req)) {
+  if(userCanAccess(req) || isPublicPath(req)) {
     proxyMiddleware(req, res, next);
   } else {
     next();
