@@ -29,6 +29,11 @@ module.exports = {
       requiredOrganization: 'YOUR-ORGANIZATION-NAME' // short organization name
     },
 
+    // Simple password login, make sure you choose a very secure password.
+    // password: {
+    //  token: "YOUR-PASSWORD" // any user that knows this can log in
+    // },
+
     // Register a new oauth app on Google Apps at
     // https://code.google.com/apis/console
     google: {

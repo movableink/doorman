@@ -6,12 +6,14 @@ try { var conf = require('./conf'); } catch(e) {
 var http = require('http');
 var https = require('https');
 var express = require('express');
+var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
 var google = require('./lib/modules/google');
-var log = require('./lib/winston');
+var password = require('./lib/modules/password');
+global.log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 var proxyMiddleware = proxy.middleware();
@@ -23,6 +25,9 @@ if (conf.modules.github) {
 if (conf.modules.google) {
   google.setup(everyauth);
 }
+if(conf.modules.password) {
+  password.setup(everyauth);
+}
 
 function userCanAccess(req) {
   var auth = req.session && req.session.auth;
@@ -31,7 +36,7 @@ function userCanAccess(req) {
     return false;
   }
 
-  for(var authType in req.session.auth) {
+  for(var authType in auth) {
     if(everyauth[authType] && everyauth[authType].authorize(auth)) {
       return true;
     }
@@ -90,6 +95,7 @@ var app = express();
 app.use(log.middleware());
 app.use(doormanSession);
 app.use(checkUser);
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(everyauth.middleware());
 app.use(express.static(__dirname + "/public", {maxAge: 0 }));
 app.use(loginPage);

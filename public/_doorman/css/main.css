@@ -43,7 +43,27 @@ h2 {
   color: #CCC;
 }
 
-a.button {
+form label {
+  font-family: "Helvetica", sans-serif;
+  text-transform: uppercase;
+  display: block;
+  font-size: 0.7em;
+  color: #999;
+  padding-bottom: 0.5em;
+}
+
+form input {
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  background-color: #65676B;
+  color: #FFF;
+  font-size: 1.2em;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+}
+
+.button {
   display: block;
   color: #fff;
   text-decoration: none;
@@ -74,11 +94,11 @@ a.button {
   border-radius: 6px;
 }
 
-a.button:hover {
-  background-position: 0 -15px;
+.button:hover {
+  background-position: 0 60px;
 }
 
-a.button:active {
+.button:active {
   background-color: #3072b3; /* Old browsers */
   background-repeat: repeat-x; /* Repeat the gradient */
   background-image: -moz-linear-gradient(top, #285e93 0%, #3072b3 100%); /* FF3.6+ */
@@ -93,7 +113,7 @@ a.button:active {
   box-shadow: inset 0 10px 10px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.2);
 }
 
-a.button img {
+.button img {
   background-color: #fff;
   margin-right: 5px;
   padding: 2px;
