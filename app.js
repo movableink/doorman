@@ -65,6 +65,7 @@ function loginPage(req, res, next) {
 // Store the middleware since we use it in the websocket proxy
 var sessionOptions = {
   maxage: conf.sessionCookieMaxAge,
+  domain: conf.sessionCookieDomain,
   secret: conf.sessionSecret,
   name: '__doorman',
 };
