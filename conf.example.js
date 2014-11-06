@@ -9,6 +9,7 @@ module.exports = {
 
   sessionSecret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4', // change me
   sessionCookieMaxAge: 4 * 24 * 60 * 60 * 1000, // milliseconds until session cookie expires (or "false" to not expire)
+  // sessionSecureProxy: true, // optional secureProxy to set cookie only over HTTPS, defaut is not set
   // sessionCookieDomain: '.example.com', // optional cookie domain, default is not set
 
   // Paths that bypass doorman and do not need any authentication.  Matches on the

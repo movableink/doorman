@@ -86,6 +86,7 @@ function loginPage(req, res, next) {
 var sessionOptions = {
   maxage: conf.sessionCookieMaxAge,
   domain: conf.sessionCookieDomain,
+  secureProxy: conf.sessionSecureProxy,
   secret: conf.sessionSecret,
   name: '__doorman',
 };
