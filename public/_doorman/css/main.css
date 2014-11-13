@@ -43,6 +43,12 @@ h2 {
   color: #CCC;
 }
 
+h3 {
+  font-weight: normal;
+  font-size: 1.2em;
+  color: #C00000;
+}
+
 form label {
   font-family: "Helvetica", sans-serif;
   text-transform: uppercase;

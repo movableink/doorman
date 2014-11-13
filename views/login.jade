@@ -2,6 +2,9 @@ extends layout
 
 block content
   h1 How may I help you?
+   - if (notCompany) {
+    span <h3>Access deny!</h3><h2> You are not a member of the authorized organization!</h2>
+   - }
 
   h2 I'm with:
 

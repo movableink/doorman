@@ -13,6 +13,7 @@ var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
 var google = require('./lib/modules/google');
 var password = require('./lib/modules/password');
+var notCompany = false;
 global.log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
@@ -39,6 +40,8 @@ function userCanAccess(req) {
   for(var authType in auth) {
     if(everyauth[authType] && everyauth[authType].authorize(auth)) {
       return true;
+    } else {
+      notCompany = true;
     }
   }
 
@@ -79,7 +82,8 @@ function loginPage(req, res, next) {
   }
 
   req.session.redirectTo = req.originalUrl;
-  res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled });
+  res.render('login.jade', { pageTitle: 'Login', providers: everyauth.enabled, notCompany: notCompany });
+  notCompany = false;
 }
 
 // Store the middleware since we use it in the websocket proxy
