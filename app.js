@@ -1,8 +1,4 @@
-try { var conf = require('./conf'); } catch(e) {
-  console.log("Missing conf.js.  Please copy conf.example.js to conf.js and edit it.");
-  process.exit(1);
-}
-
+var conf = require('./lib/config');
 var http = require('http');
 var https = require('https');
 var express = require('express');
