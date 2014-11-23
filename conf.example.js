@@ -10,10 +10,12 @@ module.exports = {
     port: 8080
   },
 
-  sessionSecret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4', // change me
-  sessionCookieMaxAge: 4 * 24 * 60 * 60 * 1000, // milliseconds until session cookie expires (or "false" to not expire)
-  // sessionSecureProxy: true, // optional secureProxy to set cookie only over HTTPS, defaut is not set
-  // sessionCookieDomain: '.example.com', // optional cookie domain, default is not set
+  // Session cookie options, see: https://github.com/expressjs/cookie-session
+  sessionCookie: {
+    name: '__doorman',
+    maxage: 4 * 24 * 60 * 60 * 1000, // milliseconds until expiration (or "false" to not expire)
+    secret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4' // change me
+  },
 
   // Paths that bypass doorman and do not need any authentication.  Matches on the
   // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
