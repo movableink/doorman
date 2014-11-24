@@ -41,6 +41,16 @@ node-http-proxy (https://github.com/nodejitsu/node-http-proxy) grafted together,
 and those two projects do most of the heavy lifting.
 
 
+Changelog
+---------
+
+#### 0.3.0
+
+  * `requiredEmail` option for github and google modules
+  * `requiredDomain` and `requiredOrganization` options can be arrays
+  * /_doorman/logout route
+  * Upgrade everyauth to 0.4.9 (#18)
+
 License
 -------
 
