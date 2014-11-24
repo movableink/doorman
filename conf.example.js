@@ -31,6 +31,12 @@ module.exports = {
       appSecret: 'YOUR-GITHUB-APP-SECRET',
       entryPath: '/oauth/github',
       callbackPath: '/oauth/github/callback',
+
+      // List of github email addresses that can authenticate
+      // requiredEmail: ['user1@gmail.com', 'user2@yahoo.com'],
+
+      // Only users with this organization name can authenticate. If an array is
+      // listed, user may authenticate as a member of ANY of the domains.
       requiredOrganization: 'YOUR-ORGANIZATION-NAME' // short organization name
     },
 
@@ -44,6 +50,13 @@ module.exports = {
     google: {
       appId: 'YOUR-GOOGLE-CLIENT-ID',
       appSecret: 'YOUR-GOOGLE-CLIENT-SECRET',
+
+      // If uncommented, user must authenticate with an account associated with one of
+      // the emails in the list.
+      // requiredEmail: ['user1@gmail.com', 'user2@gmail.com'],
+
+      // User must be a member of this domain to successfully authenticate. If an array
+      // is listed, user may authenticate as a member of ANY of the domains.
       requiredDomain: 'yourdomain.com'
     }
   }
