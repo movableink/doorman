@@ -44,7 +44,11 @@ module.exports = {
     google: {
       appId: 'YOUR-GOOGLE-CLIENT-ID',
       appSecret: 'YOUR-GOOGLE-CLIENT-SECRET',
-      requiredDomain: 'yourdomain.com'
+      requiredDomain: 'yourdomain.com',
+      requiredEmail: [
+        'email1@gmail.com',
+        'email2@gmail.com'
+        ]
     }
   }
 };
