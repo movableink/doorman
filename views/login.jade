@@ -1,9 +1,16 @@
 extends layout
 
 block content
-  h1 How may I help you?
+  - if (messages.error)
+    h1 Sorry, there was a problem.
 
-  h2 I'm with:
+    h2.message.error
+      = messages.error
+
+  - else
+    h1 How may I help you?
+
+    h2 I'm with:
 
   #provider-list
     each provider, name in providers

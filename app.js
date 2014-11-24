@@ -8,6 +8,8 @@ var https = require('https');
 var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('cookie-session');
+var cookieParser = require('cookie-parser');
+var flash = require('express-flash');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
@@ -42,10 +44,6 @@ function userCanAccess(req) {
     }
   }
 
-  // User had an auth, but it wasn't an acceptable one
-  req.session.auth = null;
-  log.debug("User rejected because their oauth was not in allowed group");
-
   return false;
 }
 
@@ -68,14 +66,27 @@ function checkUser(req, res, next) {
   if(userCanAccess(req) || isPublicPath(req)) {
     proxyMiddleware(req, res, next);
   } else {
+    if(req.session && req.session.auth) {
+      // User had an auth, but it wasn't an acceptable one
+      req.session.auth = null;
+      log.debug("User successfully oauthed but their account does not meet the configured criteria.");
+
+      req.flash('error', "Sorry, your account is not authorized to access the system.");
+    }
     next();
   }
 }
 
 function loginPage(req, res, next) {
+  if(req.url.indexOf("/_doorman/logout") == 0) {
+    if(req && req.session) { req.session.auth = null; }
+    res.redirect("/");
+    return;
+  }
+
   if(req.query.error) {
     res.render('error.jade', { pageTitle: "An error occurred.", error: "The authentication method reports: " + req.query.error_description });
-    return
+    return;
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -95,7 +106,9 @@ var doormanSession = session(sessionOptions);
 var app = express();
 
 app.use(log.middleware());
+app.use(cookieParser(conf.sessionSecret));
 app.use(doormanSession);
+app.use(flash());
 app.use(checkUser);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(everyauth.middleware());
@@ -110,6 +123,9 @@ app.on('error', function(err) {
 everyauth.everymodule.moduleErrback(function(err, data) {
   data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
 });
+
+// We don't actually use this
+everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
 
 var server = http.createServer(app);
 
