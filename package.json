@@ -19,7 +19,7 @@
   "dependencies": {
     "body-parser":    "1.8.0",
     "cookie-session": "1.0.2",
-    "everyauth":      "0.4.6",
+    "everyauth":      "0.4.9",
     "express":        "4.8.8",
     "http-proxy":     "1.3.0",
     "jade":           "1.6.0",
