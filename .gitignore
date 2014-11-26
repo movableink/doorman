@@ -1,3 +1,5 @@
 /node_modules
 /conf.js
 /log/*
+/config/app.js
+/config/domains/*.js
