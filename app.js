@@ -1,12 +1,12 @@
-var config = require('./lib/config');
-var http = require('http');
-var https = require('https');
-var express = require('express');
+var http       = require('http');
+var https      = require('https');
+var express    = require('express');
 var bodyParser = require('body-parser');
-var flash = require('express-flash');
-var everyauth = require('everyauth');
-var Domain = require('./lib/domain');
-global.log = require('./lib/winston');
+var flash      = require('express-flash');
+var everyauth  = require('everyauth');
+var Domain     = require('./lib/domain');
+global.log     = require('./lib/winston');
+var config     = require('./lib/config');
 
 var domains = {};
 
