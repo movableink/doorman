@@ -15,7 +15,7 @@ for(var domainName in config.domains) {
 
   var domain = new Domain(domainOptions);
   domains[domainName] = domain;
-}
+  }
 
 function loginPage(req, res, next) {
   if(req.url.indexOf("/_doorman/logout") == 0) {
@@ -25,8 +25,7 @@ function loginPage(req, res, next) {
   }
 
   if(req.query.error) {
-    res.render('error.jade', { pageTitle: "An error occurred.", error: "The authentication method reports: " + req.query.error_description });
-    return;
+    req.flash('error', "The authentication method reports: " + req.query.error_description);
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -68,7 +67,8 @@ app.on('error', function(err) {
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
+  data.req.flash('error', "Perhaps something is misconfigured, or the provider is down.");
+  data.res.redirectTo('/');
 });
 
 // We don't actually use this
@@ -79,7 +79,7 @@ var server = http.createServer(app);
 // WebSockets are also authenticated
 server.on('upgrade', function(req, socket, head) {
   req.vdomain.upgrade(req, socket, head);
-});
+  });
 
 server.listen(config.port);
 
