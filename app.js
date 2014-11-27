@@ -88,8 +88,7 @@ function loginPage(req, res, next) {
   }
 
   if(req.query.error) {
-    res.render('error.jade', { pageTitle: "An error occurred.", error: "The authentication method reports: " + req.query.error_description });
-    return;
+    req.flash('error', "The authentication method reports: " + req.query.error_description);
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -124,7 +123,8 @@ app.on('error', function(err) {
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
+  data.req.flash('error', "Perhaps something is misconfigured, or the provider is down.");
+  data.res.redirectTo('/');
 });
 
 // We don't actually use this
