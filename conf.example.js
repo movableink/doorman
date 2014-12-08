@@ -17,6 +17,13 @@ module.exports = {
     secret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4' // change me
   },
 
+  // Optionally configure logging. By default logs will be sent to ./log/${NODE_ENV}.log
+  // If $NODE_ENV is "development", logs will also be sent to the console.
+  // log: {
+  //  file: "/path/to/file.log", // false to disable
+  //  console: true              // true/false
+  // },
+
   // Paths that bypass doorman and do not need any authentication.  Matches on the
   // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
   // publicPaths: [
