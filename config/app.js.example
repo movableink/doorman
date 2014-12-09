@@ -1,0 +1,4 @@
+module.exports = {
+  // Port that doorman listens on
+  port: 8080
+};
