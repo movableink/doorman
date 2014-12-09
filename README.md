@@ -13,14 +13,15 @@ delegate your internal app's authentication/authorization to that app?
 Requirements
 ------------
 
- * node.js >= 0.4.x
+ * node.js >= 0.10.x
 
 
 Installation
 ------------
 
   * `npm install`
-  * copy conf.example.js to conf.js and modify
+  * copy config/app.js.example to config/app.js and modify
+  * copy config/domains/default.js.example to config/domains/default.js and modify
   * `npm start`
 
 
@@ -30,7 +31,18 @@ Strategies
 Doorman uses [everyauth](https://github.com/bnoguchi/everyauth) for authenticating,
 so it supports a wide variety of providers for authentication.  For authorization,
 we need to determine which authenticated users to let in. (see `lib/modules`) So
-far only the Github module is complete, but others are fairly easy.
+far only the Github, Google Apps, and Password modules are complete, but others are
+fairly easy to add.
+
+
+Multiple Domains
+----------------
+
+Doorman supports running a single instance for multiple domains.  It is organized
+similar to Apache's virtualhosts; doorman will scan all domains found in
+config/domains/*.js. The 'default' domain is special; it is a catch-all for when
+none of the other domains are matched.  If you only have one service behind doorman
+you can just use the 'default' domain.
 
 
 Acknowledgements
@@ -43,6 +55,12 @@ and those two projects do most of the heavy lifting.
 
 Changelog
 ---------
+
+#### 0.4.0
+
+  * [breaking] : configuration file moved from conf.js to config/app.js; backend
+    configuration split out into config/domains/*.js
+  * Multi-domain support added.
 
 #### 0.3.0
 
