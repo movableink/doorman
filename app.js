@@ -3,6 +3,7 @@ try { var conf = require('./conf'); } catch(e) {
   process.exit(1);
 }
 
+var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var express = require('express');
@@ -15,6 +16,7 @@ var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
 var google = require('./lib/modules/google');
 var password = require('./lib/modules/password');
+var tls = require('./middlewares/tls');
 global.log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
@@ -108,6 +110,7 @@ var doormanSession = session(sessionOptions);
 var app = express();
 
 app.use(log.middleware());
+app.use(tls);
 app.use(cookieParser(conf.sessionSecret));
 app.use(doormanSession);
 app.use(flash());
@@ -130,19 +133,41 @@ everyauth.everymodule.moduleErrback(function(err, data) {
 // We don't actually use this
 everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
 
-var server = http.createServer(app);
-
 // WebSockets are also authenticated
-server.on('upgrade', function(req, socket, head) {
-  doormanSession(req, new http.ServerResponse(req), function() {
-    if(userCanAccess(req)) {
-      proxy.proxyWebSocketRequest(req, socket, head);
-    } else {
-      socket.destroy();
-    }
+function upgradeWebsocket(server) {
+  server.on('upgrade', function(req, socket, head) {
+    doormanSession(req, new http.ServerResponse(req), function() {
+      if(userCanAccess(req)) {
+        proxy.proxyWebSocketRequest(req, socket, head);
+      } else {
+        socket.destroy();
+      }
+    });
   });
-});
+}
 
-server.listen(conf.port);
+var notice = "Doorman on duty,";
 
-log.notice("Doorman on duty, listening on port " + conf.port + " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".");
+var httpServer = http.createServer(app);
+
+// Enable HTTPS if SSL options exist
+if (conf.securePort && conf.ssl && conf.ssl.keyFile && conf.ssl.certFile) {
+  var options = {
+    key: fs.readFileSync(conf.ssl.keyFile),
+    cert: fs.readFileSync(conf.ssl.certFile)
+  };
+
+  var httpsServer = https.createServer(options, app);
+
+  upgradeWebsocket(httpsServer);
+  httpsServer.listen(conf.securePort);
+
+  notice += " listening on secure port " + conf.securePort;
+}
+notice += " listening on port " + conf.port;
+notice += " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".";
+
+upgradeWebsocket(httpServer);
+httpServer.listen(conf.port);
+
+log.notice(notice);
