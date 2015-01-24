@@ -27,7 +27,7 @@ module.exports = {
   // ssl: {
   //   keyFile: '/path/to/keyfile.key',
   //   certFile: '/path/to/certfile.crt'
-  //   caFile: '/path/to/cafile.crt'
+  //   // caFile: '/path/to/cafile.crt' // OPTIONAL: Intermediate CA certificate
   // }
 
   // Paths that bypass doorman and do not need any authentication.  Matches on the

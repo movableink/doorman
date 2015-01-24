@@ -157,6 +157,8 @@ if (conf.securePort && conf.ssl && conf.ssl.keyFile && conf.ssl.certFile) {
     cert: fs.readFileSync(conf.ssl.certFile)
   };
 
+  if (conf.ssl.caFile) options.ca = fs.readFileSync(conf.ssl.caFile);
+
   var httpsServer = https.createServer(options, app);
 
   upgradeWebsocket(httpsServer);
