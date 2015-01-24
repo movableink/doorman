@@ -1,4 +1,4 @@
-var conf = require('../../conf');
+var conf = require('../conf');
 
 /**
  * Check whether Transport Layer Security (TLS) is forced in the config. If
@@ -6,7 +6,16 @@ var conf = require('../../conf');
  **/
 module.exports = function forceTLS(req, res, next) {
   if (conf.forceTLS && conf.securePort && !req.secure) {
-    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    var redirectPath = ['https://', req.hostname];
+
+    if (conf.securePort != 443) {
+      redirectPath.push(':');
+      redirectPath.push(conf.securePort);
+    }
+
+    redirectPath.push(req.url);
+
+    return res.redirect(301, redirectPath.join(''));
   }
   next();
 }
