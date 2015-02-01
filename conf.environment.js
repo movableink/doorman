@@ -3,7 +3,7 @@ module.exports = {
   port: process.env.DOORMAN_LISTEN_PORT,
 
   // URL for OAuth callbacks, default autodetect
-  // hostname: 'http://myhostname.example.com',
+  hostname: process.env.DOORMAN_HOSTNAME,
 
   proxyTo: {
     host: process.env.DOORMAN_PROXY_HOST,
