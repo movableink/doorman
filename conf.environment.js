@@ -2,6 +2,9 @@ module.exports = {
   // port to listen on
   port: process.env.DOORMAN_LISTEN_PORT,
 
+  securePort: process.env.DOORMAN_SECURE_PORT,
+  forceTLS: process.env.DOORMAN_FORCE_TLS,
+
   // URL for OAuth callbacks, default autodetect
   hostname: process.env.DOORMAN_HOSTNAME,
 
@@ -18,12 +21,15 @@ module.exports = {
   },
 
   // Paths that bypass doorman and do not need any authentication.  Matches on the
-  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
-  // publicPaths: [
-  //   '/about/',
-  //   '/robots.txt',
-  //   /(.*?).png$/
-  // ],
+  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are not supported from environment variables.
+  // example: DOORMAN_PUBLIC_PATHS="/about/,/robots.txt"
+  publicPaths: process.env.DOORMAN_PUBLIC_PATHS && process.env.DOORMAN_PUBLIC_PATHS.split(','),
+
+  ssl: {
+    keyFile: process.env.DOORMAN_SSL_KEYFILE,
+    certFile: process.env.DOORMAN_SSL_CERTFILE,
+    caFile: process.env.DOORMAN_SSL_CAFILE
+  },
 
   modules: {
     // Register a new oauth app on Github at
