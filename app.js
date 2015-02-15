@@ -10,9 +10,6 @@ var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
-var github = require('./lib/modules/github');
-var google = require('./lib/modules/google');
-var password = require('./lib/modules/password');
 var tls = require('./middlewares/tls');
 global.log = require('./lib/winston');
 
@@ -21,12 +18,15 @@ var proxyMiddleware = proxy.middleware();
 
 // Set up our auth strategies
 if (conf.modules.github) {
+  var github = require('./lib/modules/github');
   github.setup(everyauth);
 }
 if (conf.modules.google) {
+  var google = require('./lib/modules/google');
   google.setup(everyauth);
 }
 if(conf.modules.password) {
+  var password = require('./lib/modules/password');
   password.setup(everyauth);
 }
 
@@ -128,7 +128,7 @@ everyauth.everymodule.moduleErrback(function(err, data) {
 });
 
 // We don't actually use this
-everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
+everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); });
 
 // WebSockets are also authenticated
 function upgradeWebsocket(server) {
