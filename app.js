@@ -1,4 +1,9 @@
-var conf = require('./lib/config');
+try { var conf = require('./conf'); } catch(e) {
+  console.log("Missing conf.js.  Please copy conf.example.js to conf.js and edit it.");
+  process.exit(1);
+}
+
+var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var express = require('express');
@@ -11,6 +16,7 @@ var Proxy = require('./lib/proxy');
 var github = require('./lib/modules/github');
 var google = require('./lib/modules/google');
 var password = require('./lib/modules/password');
+var tls = require('./middlewares/tls');
 global.log = require('./lib/winston');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
@@ -84,8 +90,7 @@ function loginPage(req, res, next) {
   }
 
   if(req.query.error) {
-    res.render('error.jade', { pageTitle: "An error occurred.", error: "The authentication method reports: " + req.query.error_description });
-    return;
+    req.flash('error', "The authentication method reports: " + req.query.error_description);
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -93,7 +98,7 @@ function loginPage(req, res, next) {
 }
 
 // Store the middleware since we use it in the websocket proxy
-var sessionOptions = {
+var sessionOptions = conf.sessionCookie || {
   maxage: conf.sessionCookieMaxAge,
   domain: conf.sessionCookieDomain,
   secureProxy: conf.sessionSecureProxy,
@@ -105,6 +110,7 @@ var doormanSession = session(sessionOptions);
 var app = express();
 
 app.use(log.middleware());
+app.use(tls);
 app.use(cookieParser(conf.sessionSecret));
 app.use(doormanSession);
 app.use(flash());
@@ -120,25 +126,50 @@ app.on('error', function(err) {
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  data.res.render('error.jade', { pageTitle: 'Sorry, there was an error.', error: "Perhaps something is misconfigured, or the provider is down." });
+  data.req.flash('error', "Perhaps something is misconfigured, or the provider is down.");
+  data.res.redirectTo('/');
 });
 
 // We don't actually use this
 everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
 
-var server = http.createServer(app);
-
 // WebSockets are also authenticated
-server.on('upgrade', function(req, socket, head) {
-  doormanSession(req, new http.ServerResponse(req), function() {
-    if(userCanAccess(req)) {
-      proxy.proxyWebSocketRequest(req, socket, head);
-    } else {
-      socket.destroy();
-    }
+function upgradeWebsocket(server) {
+  server.on('upgrade', function(req, socket, head) {
+    doormanSession(req, new http.ServerResponse(req), function() {
+      if(userCanAccess(req)) {
+        proxy.proxyWebSocketRequest(req, socket, head);
+      } else {
+        socket.destroy();
+      }
+    });
   });
-});
+}
 
-server.listen(conf.port);
+var notice = "Doorman on duty,";
 
-log.notice("Doorman on duty, listening on port " + conf.port + " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".");
+var httpServer = http.createServer(app);
+
+// Enable HTTPS if SSL options exist
+if (conf.securePort && conf.ssl && conf.ssl.keyFile && conf.ssl.certFile) {
+  var options = {
+    key: fs.readFileSync(conf.ssl.keyFile),
+    cert: fs.readFileSync(conf.ssl.certFile)
+  };
+
+  if (conf.ssl.caFile) options.ca = fs.readFileSync(conf.ssl.caFile);
+
+  var httpsServer = https.createServer(options, app);
+
+  upgradeWebsocket(httpsServer);
+  httpsServer.listen(conf.securePort);
+
+  notice += " listening on secure port " + conf.securePort;
+}
+notice += " listening on port " + conf.port;
+notice += " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".";
+
+upgradeWebsocket(httpServer);
+httpServer.listen(conf.port);
+
+log.notice(notice);

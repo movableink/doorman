@@ -1,49 +1,42 @@
 module.exports = {
   // port to listen on
-  port: 8085,
+  port: process.env.DOORMAN_LISTEN_PORT,
 
-  // Secure port for HTTPS connections. SSL certificate options MUST be set when enabled.
-  // securePort: 443,
-
-  // Force Transport Layer Security (TLS). Secure port and SSL certificates must be set.
-  // forceTLS: true,
+  securePort: process.env.DOORMAN_SECURE_PORT,
+  forceTLS: process.env.DOORMAN_FORCE_TLS,
 
   // URL for OAuth callbacks, default autodetect
-  // hostname: 'http://myhostname.example.com',
+  hostname: process.env.DOORMAN_HOSTNAME,
 
   proxyTo: {
-    host: 'localhost',
-    port: 8080
+    host: process.env.DOORMAN_PROXY_HOST,
+    port: process.env.DOORMAN_PROXY_PORT
   },
 
   // Session cookie options, see: https://github.com/expressjs/cookie-session
   sessionCookie: {
     name: '__doorman',
-    maxage: 4 * 24 * 60 * 60 * 1000, // milliseconds until expiration (or "false" to not expire)
-    secret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4' // change me
+    maxage: process.env.DOORMAN_MAXAGE, // milliseconds until expiration (or "false" to not expire)
+    secret: process.env.DOORMAN_SECRET
   },
 
-  // SSL certificates are required when securePort is set
-  // ssl: {
-  //   keyFile: '/path/to/keyfile.key',
-  //   certFile: '/path/to/certfile.crt'
-  //   // caFile: '/path/to/cafile.crt' // OPTIONAL: Intermediate CA certificate
-  // }
-
   // Paths that bypass doorman and do not need any authentication.  Matches on the
-  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
-  // publicPaths: [
-  //   '/about/',
-  //   '/robots.txt',
-  //   /(.*?).png$/
-  // ],
+  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are not supported from environment variables.
+  // example: DOORMAN_PUBLIC_PATHS="/about/,/robots.txt"
+  publicPaths: process.env.DOORMAN_PUBLIC_PATHS && process.env.DOORMAN_PUBLIC_PATHS.split(','),
+
+  ssl: {
+    keyFile: process.env.DOORMAN_SSL_KEYFILE,
+    certFile: process.env.DOORMAN_SSL_CERTFILE,
+    caFile: process.env.DOORMAN_SSL_CAFILE
+  },
 
   modules: {
     // Register a new oauth app on Github at
     // https://github.com/account/applications/new
     github: {
-      appId: 'YOUR-GITHUB-APP-ID',
-      appSecret: 'YOUR-GITHUB-APP-SECRET',
+      appId: process.env.DOORMAN_GITHUB_APPID,
+      appSecret: process.env.DOORMAN_GITHUB_APPSECRET,
       entryPath: '/oauth/github',
       callbackPath: '/oauth/github/callback',
 
@@ -52,7 +45,7 @@ module.exports = {
 
       // Only users with this organization name can authenticate. If an array is
       // listed, user may authenticate as a member of ANY of the domains.
-      requiredOrganization: 'YOUR-ORGANIZATION-NAME' // short organization name
+      requiredOrganization: process.env.DOORMAN_GITHUB_REQUIRED_ORGANIZATION // short organization name
     },
 
     // Simple password login, make sure you choose a very secure password.
@@ -63,8 +56,8 @@ module.exports = {
     // Register a new oauth app on Google Apps at
     // https://code.google.com/apis/console
     google: {
-      appId: 'YOUR-GOOGLE-CLIENT-ID',
-      appSecret: 'YOUR-GOOGLE-CLIENT-SECRET',
+      appId: process.env.DOORMAN_GOOGLE_APPID,
+      appSecret: process.env.DOORMAN_GOOGLE_APPSECRET,
 
       // If uncommented, user must authenticate with an account associated with one of
       // the emails in the list.
@@ -72,7 +65,7 @@ module.exports = {
 
       // User must be a member of this domain to successfully authenticate. If an array
       // is listed, user may authenticate as a member of ANY of the domains.
-      requiredDomain: 'yourdomain.com'
+      requiredDomain: process.env.DOORMAN_GOOGLE_REQUIRED_DOMAIN
     }
   }
 };
