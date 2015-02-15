@@ -13,7 +13,7 @@ delegate your internal app's authentication/authorization to that app?
 Requirements
 ------------
 
- * node.js >= 0.4.x
+ * node.js >= 0.8.x
 
 
 Installation
@@ -30,7 +30,7 @@ Strategies
 Doorman uses [everyauth](https://github.com/bnoguchi/everyauth) for authenticating,
 so it supports a wide variety of providers for authentication.  For authorization,
 we need to determine which authenticated users to let in. (see `lib/modules`) So
-far only the Github module is complete, but others are fairly easy.
+far only the Github and Google modules are complete, but others are fairly easy.
 
 
 Acknowledgements
@@ -43,6 +43,15 @@ and those two projects do most of the heavy lifting.
 
 Changelog
 ---------
+
+#### 0.4.0
+  * _breaking_: simplify session cookie config. (see conf.example.js) (kcrayon)
+  * pass config file as a second argument (kcrayon)
+  * google auth only prompts user when necessary (kuahyeow)
+  * reduce github permissions to minimum necessary (dwradcliffe)
+  * https support (AndrewJo)
+  * conf.environment.js config for using environment variables (pataquets)
+  * replace winston logging with stdout/stderr
 
 #### 0.3.0
 
