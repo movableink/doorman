@@ -11,7 +11,7 @@ var flash = require('express-flash');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
 var tls = require('./middlewares/tls');
-global.log = require('./lib/winston');
+log = require('./lib/log');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 var proxyMiddleware = proxy.middleware();
@@ -33,7 +33,7 @@ if(conf.modules.password) {
 function userCanAccess(req) {
   var auth = req.session && req.session.auth;
   if(!auth) {
-    log.debug("User rejected because they haven't authenticated.");
+    log.info("User rejected because they haven't authenticated.");
     return false;
   }
 
@@ -71,7 +71,7 @@ function checkUser(req, res, next) {
     if(req.session && req.session.auth) {
       // User had an auth, but it wasn't an acceptable one
       req.session.auth = null;
-      log.debug("User successfully oauthed but their account does not meet the configured criteria.");
+      log.info("User successfully oauthed but their account does not meet the configured criteria.");
 
       req.flash('error', "Sorry, your account is not authorized to access the system.");
     }
@@ -104,9 +104,14 @@ var sessionOptions = conf.sessionCookie || {
 };
 var doormanSession = session(sessionOptions);
 
+var logMiddleware = function(req, res, next) {
+  log.info([req.method, req.headers.host, req.url].join(' '));
+  next();
+};
+
 var app = express();
 
-app.use(log.middleware());
+app.use(logMiddleware);
 app.use(tls);
 app.use(cookieParser(conf.sessionSecret));
 app.use(doormanSession);
@@ -119,7 +124,7 @@ app.use(loginPage);
 
 // Uncaught error states
 app.on('error', function(err) {
-  console.log(err);
+  log.error(err);
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
@@ -169,4 +174,4 @@ notice += " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".
 upgradeWebsocket(httpServer);
 httpServer.listen(conf.port);
 
-log.notice(notice);
+log.error(notice);
