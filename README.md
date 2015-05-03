@@ -44,6 +44,9 @@ and those two projects do most of the heavy lifting.
 Changelog
 ---------
 
+#### 0.4.1
+  * bump http-proxy version to fix #32 (AlexRRR)
+
 #### 0.4.0
   * _breaking_: simplify session cookie config. (see conf.example.js) (kcrayon)
   * pass config file as a second argument (kcrayon)
