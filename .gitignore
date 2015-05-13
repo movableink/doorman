@@ -3,3 +3,4 @@
 /log/*
 /config/app.js
 /config/domains/*.js
+/.deploy
