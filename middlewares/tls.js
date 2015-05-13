@@ -1,16 +1,16 @@
-var conf = require('../conf');
+var config = require('../lib/config');
 
 /**
  * Check whether Transport Layer Security (TLS) is forced in the config. If
  * forceTLS option is set to true, redirect all unsecured HTTP traffic to HTTPS.
  **/
 module.exports = function forceTLS(req, res, next) {
-  if (conf.forceTLS && conf.securePort && !req.secure) {
+  if (config.forceTLS && config.securePort && !req.secure) {
     var redirectPath = ['https://', req.hostname];
 
-    if (conf.securePort != 443) {
+    if (config.securePort != 443) {
       redirectPath.push(':');
-      redirectPath.push(conf.securePort);
+      redirectPath.push(config.securePort);
     }
 
     redirectPath.push(req.url);

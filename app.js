@@ -6,7 +6,6 @@ var bodyParser = require('body-parser');
 var flash      = require('express-flash');
 var everyauth  = require('everyauth');
 var Domain     = require('./lib/domain');
-var tls        = require('./middlewares/tls');
 var log        = require('./middlewares/log');
 
 var domains = {};
@@ -35,6 +34,10 @@ function loginPage(req, res, next) {
 
 var app = express();
 
+function forceTLSMiddleware(req, res, next) {
+  req.vdomain.forceTLSMiddleware(req, res, next);
+}
+
 function proxyMiddleware(req, res, next) {
   req.vdomain.proxyMiddleware(req, res, next);
 }
@@ -51,9 +54,9 @@ function sessionMiddleware(req, res, next) {
   req.vdomain.sessionMiddleware(req, res, next);
 }
 
-app.use(tls);
 app.use(log);
 app.use(Domain.setDomain(domains));
+app.use(forceTLSMiddleware);
 app.use(cookieMiddleware);
 app.use(sessionMiddleware);
 app.use(flash());
@@ -76,16 +79,35 @@ everyauth.everymodule.moduleErrback(function(err, data) {
 // We don't actually use this
 everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); });
 
-var server = http.createServer(app);
-
-// WebSockets are also authenticated
-server.on('upgrade', function(req, socket, head) {
-  req.vdomain.upgrade(req, socket, head);
+function upgradeWebsocket(server) {
+  // WebSockets are also authenticated
+  server.on('upgrade', function(req, socket, head) {
+    req.vdomain.upgrade(req, socket, head);
   });
+}
 
-server.listen(config.port);
+
+var httpServer = http.createServer(app);
+httpServer.listen(config.port);
+upgradeWebsocket(httpServer);
 
 console.warn("Doorman on duty, listening on port " + config.port + ".");
+
+if(config.securePort) {
+  var options = {
+    key: fs.readFileSync(config.ssl.keyFile),
+    cert: fs.readFileSync(config.ssl.certFile)
+  };
+
+  if (conf.ssl.caFile) options.ca = fs.readFileSync(conf.ssl.caFile);
+
+  var httpsServer = https.createServer(app);
+  httpsServer.listen(config.securePort);
+  upgradeWebsocket(httpsServer);
+
+  console.warn("                 listening on secure port " + config.securePort + ".");
+}
+
 for(var d in domains) {
   var domain = domains[d];
   console.warn("Proxying domain " + domain.options.domain + " to " + domain.options.proxyTo.host + ":" + domain.options.proxyTo.port + ".");

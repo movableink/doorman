@@ -1,4 +1,12 @@
 module.exports = {
   // Port that doorman listens on
   port: 8080
+
+  // Uncomment for HTTPS
+  // securePort: 443,
+  // ssl: {
+  //   keyFile:  'path/to/certificate.key',
+  //   certFile: 'path/to/certificate.crt',
+  //   caFile: 'path/to/intermediate.crt' // optional intermediate CAfile
+  // }
 };

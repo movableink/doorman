@@ -12,6 +12,9 @@ module.exports = {
     port: 8080
   },
 
+  // Redirect all non-https requests to https
+  // forceTLS: true,
+
   // Session cookie options, see: https://github.com/expressjs/cookie-session
   sessionCookie: {
     name: '__doorman',
