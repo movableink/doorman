@@ -56,11 +56,23 @@ and those two projects do most of the heavy lifting.
 Changelog
 ---------
 
-#### 0.4.0
+#### master
 
   * [breaking] : configuration file moved from conf.js to config/app.js; backend
     configuration split out into config/domains/*.js
   * Multi-domain support added.
+
+#### 0.4.1
+  * bump http-proxy version to fix #32 (AlexRRR)
+
+#### 0.4.0
+  * _breaking_: simplify session cookie config. (see conf.example.js) (kcrayon)
+  * pass config file as a second argument (kcrayon)
+  * google auth only prompts user when necessary (kuahyeow)
+  * reduce github permissions to minimum necessary (dwradcliffe)
+  * https support (AndrewJo)
+  * conf.environment.js config for using environment variables (pataquets)
+  * replace winston logging with stdout/stderr
 
 #### 0.3.0
 

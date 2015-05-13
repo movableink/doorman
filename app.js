@@ -1,3 +1,4 @@
+var config     = require('./lib/config');
 var http       = require('http');
 var https      = require('https');
 var express    = require('express');
@@ -5,8 +6,8 @@ var bodyParser = require('body-parser');
 var flash      = require('express-flash');
 var everyauth  = require('everyauth');
 var Domain     = require('./lib/domain');
-global.log     = require('./lib/winston');
-var config     = require('./lib/config');
+var tls        = require('./middlewares/tls');
+var log        = require('./middlewares/log');
 
 var domains = {};
 
@@ -50,7 +51,8 @@ function sessionMiddleware(req, res, next) {
   req.vdomain.sessionMiddleware(req, res, next);
 }
 
-app.use(log.middleware());
+app.use(tls);
+app.use(log);
 app.use(Domain.setDomain(domains));
 app.use(cookieMiddleware);
 app.use(sessionMiddleware);
@@ -63,7 +65,7 @@ app.use(loginPage);
 
 // Uncaught error states
 app.on('error', function(err) {
-  console.log(err);
+  console.error(err);
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
@@ -72,7 +74,7 @@ everyauth.everymodule.moduleErrback(function(err, data) {
 });
 
 // We don't actually use this
-everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
+everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); });
 
 var server = http.createServer(app);
 
@@ -83,8 +85,8 @@ server.on('upgrade', function(req, socket, head) {
 
 server.listen(config.port);
 
-log.notice("Doorman on duty, listening on port " + config.port + ".");
+console.warn("Doorman on duty, listening on port " + config.port + ".");
 for(var d in domains) {
   var domain = domains[d];
-  log.notice("Proxying domain " + domain.options.domain + " to " + domain.options.proxyTo.host + ":" + domain.options.proxyTo.port + ".");
+  console.warn("Proxying domain " + domain.options.domain + " to " + domain.options.proxyTo.host + ":" + domain.options.proxyTo.port + ".");
 }

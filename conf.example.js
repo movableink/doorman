@@ -2,6 +2,12 @@ module.exports = {
   // port to listen on
   port: 8085,
 
+  // Secure port for HTTPS connections. SSL certificate options MUST be set when enabled.
+  // securePort: 443,
+
+  // Force Transport Layer Security (TLS). Secure port and SSL certificates must be set.
+  // forceTLS: true,
+
   // URL for OAuth callbacks, default autodetect
   // hostname: 'http://myhostname.example.com',
 
@@ -16,6 +22,13 @@ module.exports = {
     maxage: 4 * 24 * 60 * 60 * 1000, // milliseconds until expiration (or "false" to not expire)
     secret: 'AeV8Thaieel0Oor6shainu6OUfoh3ohwZaemohC0Ahn3guowieth2eiCkohhohG4' // change me
   },
+
+  // SSL certificates are required when securePort is set
+  // ssl: {
+  //   keyFile: '/path/to/keyfile.key',
+  //   certFile: '/path/to/certfile.crt'
+  //   // caFile: '/path/to/cafile.crt' // OPTIONAL: Intermediate CA certificate
+  // }
 
   // Paths that bypass doorman and do not need any authentication.  Matches on the
   // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
