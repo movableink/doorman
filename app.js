@@ -1,4 +1,5 @@
 var config     = require('./lib/config');
+var fs         = require('fs');
 var http       = require('http');
 var https      = require('https');
 var express    = require('express');
@@ -99,7 +100,7 @@ if(config.securePort) {
     cert: fs.readFileSync(config.ssl.certFile)
   };
 
-  if (conf.ssl.caFile) options.ca = fs.readFileSync(conf.ssl.caFile);
+  if (config.ssl.caFile) options.ca = fs.readFileSync(config.ssl.caFile);
 
   var httpsServer = https.createServer(app);
   httpsServer.listen(config.securePort);
