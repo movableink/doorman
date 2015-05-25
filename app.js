@@ -102,7 +102,7 @@ if(config.securePort) {
 
   if (config.ssl.caFile) options.ca = fs.readFileSync(config.ssl.caFile);
 
-  var httpsServer = https.createServer(app);
+  var httpsServer = https.createServer(options, app);
   httpsServer.listen(config.securePort);
   upgradeWebsocket(httpsServer);
 
