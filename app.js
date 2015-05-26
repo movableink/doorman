@@ -16,7 +16,7 @@ for(var domainName in config.domains) {
 
   var domain = new Domain(domainOptions);
   domains[domainName] = domain;
-  }
+}
 
 function loginPage(req, res, next) {
   if(req.url.indexOf("/_doorman/logout") == 0) {
