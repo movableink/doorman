@@ -10,6 +10,9 @@ module.exports = {
   proxyTo: {
     host: 'localhost',
     port: 8080
+    // port 443 is assumed to be ssl; if you're using another port and want ssl,
+    // uncomment the following:
+    // ssl: true
   },
 
   // Redirect all non-https requests to https
