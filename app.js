@@ -83,10 +83,11 @@ everyauth.everymodule.findUserById(function(userId, callback) { callback(userId)
 function upgradeWebsocket(server) {
   // WebSockets are also authenticated
   server.on('upgrade', function(req, socket, head) {
-    req.vdomain.upgrade(req, socket, head);
+    domainMiddleware(req, null, function() {
+      req.vdomain.upgrade(req, socket, head);
+    });
   });
 }
-
 
 var httpServer = http.createServer(app);
 httpServer.listen(config.port);
