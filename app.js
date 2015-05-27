@@ -55,8 +55,10 @@ function sessionMiddleware(req, res, next) {
   req.vdomain.sessionMiddleware(req, res, next);
 }
 
+var domainMiddleware = Domain.setDomain(domains);
+
 app.use(log);
-app.use(Domain.setDomain(domains));
+app.use(domainMiddleware);
 app.use(forceTLSMiddleware);
 app.use(cookieMiddleware);
 app.use(sessionMiddleware);
