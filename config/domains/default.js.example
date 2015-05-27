@@ -11,7 +11,7 @@ module.exports = {
     host: 'localhost',
     port: 8080
     // ssl: true      // uncomment if not using port 443 and you want to force ssl
-    // insecure: true // uncomment to not check ssl cert hostname match
+    // ssl_insecure: true // uncomment to not check ssl cert hostname match
   },
 
   // Redirect all non-https requests to https
