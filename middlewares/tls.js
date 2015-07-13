@@ -1,4 +1,4 @@
-var conf = require('../conf');
+var conf = require('../lib/config');
 
 /**
  * Check whether Transport Layer Security (TLS) is forced in the config. If
