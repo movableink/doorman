@@ -30,6 +30,9 @@ module.exports = {
   //   // caFile: '/path/to/cafile.crt' // OPTIONAL: Intermediate CA certificate
   // }
 
+  // if we proxy multiple virtual hosts, we need to avoid caching hostnames
+  // alwaysDetectHostname: 'true',
+
   // Paths that bypass doorman and do not need any authentication.  Matches on the
   // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
   // publicPaths: [
