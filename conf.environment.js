@@ -84,7 +84,7 @@ if(modules.indexOf('google') >= 0) {
 
     // User must be a member of this domain to successfully authenticate. If an array
     // is listed, user may authenticate as a member of ANY of the domains.
-    requiredDomain: process.env.DOORMAN_GOOGLE_REQUIRED_DOMAIN
+    requiredDomain: process.env.DOORMAN_GOOGLE_REQUIRED_DOMAIN && process.env.DOORMAN_GOOGLE_REQUIRED_DOMAIN.split(',')
   };
 }
 
