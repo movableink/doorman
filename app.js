@@ -39,6 +39,7 @@ function userCanAccess(req) {
 
   for(var authType in auth) {
     if(everyauth[authType] && everyauth[authType].authorize(auth)) {
+      everyauth[authType].decorate(req, auth);
       return true;
     }
   }
