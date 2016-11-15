@@ -8,6 +8,7 @@ var flash      = require('express-flash');
 var everyauth  = require('everyauth');
 var Domain     = require('./lib/domain');
 var log        = require('./middlewares/log');
+var constants  = require('constants');
 
 var domains = {};
 
@@ -99,6 +100,8 @@ console.warn("Doorman on duty, listening on port " + config.port + ".");
 
 if(config.securePort) {
   var options = {
+    secureProtocol: 'SSLv23_method',
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2,
     key: fs.readFileSync(config.ssl.keyFile),
     cert: fs.readFileSync(config.ssl.certFile)
   };
