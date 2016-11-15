@@ -13,7 +13,7 @@ delegate your internal app's authentication/authorization to that app?
 Requirements
 ------------
 
- * node.js >= 0.10.x
+ * node.js >= 4.4.4 (Earlier versions are susceptible to [CVE-2016-2107](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-2107)
 
 
 Installation
