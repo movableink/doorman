@@ -1,14 +1,15 @@
-var config     = require('./lib/config');
-var fs         = require('fs');
-var http       = require('http');
-var https      = require('https');
-var express    = require('express');
-var bodyParser = require('body-parser');
-var flash      = require('express-flash');
-var everyauth  = require('everyauth');
-var Domain     = require('./lib/domain');
-var log        = require('./middlewares/log');
-var constants  = require('constants');
+var config      = require('./lib/config');
+var fs          = require('fs');
+var http        = require('http');
+var https       = require('https');
+var express     = require('express');
+var bodyParser  = require('body-parser');
+var flash       = require('express-flash');
+var everyauth   = require('everyauth');
+var Domain      = require('./lib/domain');
+var log         = require('./middlewares/log');
+var letsencrypt = require('./middlewares/letsencrypt');
+var constants   = require('constants');
 
 var domains = {};
 
@@ -92,27 +93,16 @@ function upgradeWebsocket(server) {
   });
 }
 
-var httpServer = http.createServer(app);
-httpServer.listen(config.port);
+var httpServer = http.createServer(letsencrypt.middleware(app)).listen(config.port, function() {
+  console.warn("Doorman on duty, listening on port " + config.port + ".");
+});
 upgradeWebsocket(httpServer);
 
-console.warn("Doorman on duty, listening on port " + config.port + ".");
-
 if(config.securePort) {
-  var options = {
-    secureProtocol: 'SSLv23_method',
-    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2,
-    key: fs.readFileSync(config.ssl.keyFile),
-    cert: fs.readFileSync(config.ssl.certFile)
-  };
-
-  if (config.ssl.caFile) options.ca = fs.readFileSync(config.ssl.caFile);
-
-  var httpsServer = https.createServer(options, app);
-  httpsServer.listen(config.securePort);
+  var httpsServer = https.createServer(letsencrypt.httpsOptions, letsencrypt.middleware(app)).listen(config.securePort, function() {
+    console.warn("                 listening on secure port " + config.securePort + ".");
+  });
   upgradeWebsocket(httpsServer);
-
-  console.warn("                 listening on secure port " + config.securePort + ".");
 }
 
 for(var d in domains) {
