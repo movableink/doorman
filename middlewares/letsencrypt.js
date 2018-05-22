@@ -17,7 +17,12 @@ module.exports = require('greenlock-express').create({
     }
     cb(null, { options: opts, certs: certs });
   },
-  challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: config.certDir + '/acme-challege' }) },
+  renewWithin: 30 * 24 * 60 * 60 * 1000,
+  renewBy: 20 * 24 * 60 * 60 * 1000,
+  challenges: {
+    'http-01': require('le-challenge-fs').create({ webrootPath: config.certDir + '/acme-challege' }),
+    'tls-sni-01': require('le-challenge-sni').create({})
+  },
   store: require('le-store-certbot').create({ webrootPath: config.certDir + '/acme-challenge' }),
   debug: config.debugOutput
 });
