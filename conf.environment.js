@@ -13,6 +13,8 @@ var conf = {
     port: process.env.DOORMAN_PROXY_PORT
   },
 
+  addRobotsHeader: process.env.DOORMAN_ROBOTS_HEADER === 'true' ? true : false,
+
   // Session cookie options, see: https://github.com/expressjs/cookie-session
   sessionCookie: {
     name: '__doorman',
@@ -20,10 +22,28 @@ var conf = {
     secret: process.env.DOORMAN_SECRET || require('crypto').randomBytes(64).toString('hex') // if secret isn't supplied, generate a new one every start
   },
 
-  // Paths that bypass doorman and do not need any authentication.  Matches on the
-  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are not supported from environment variables.
+  // Paths that bypass doorman and do not need any authentication. Matches on the
+  // beginning of paths; for example '/about' matches '/about/me'.
   // example: DOORMAN_PUBLIC_PATHS="/about/,/robots.txt"
-  publicPaths: process.env.DOORMAN_PUBLIC_PATHS && process.env.DOORMAN_PUBLIC_PATHS.split(','),
+  publicPaths: process.env.DOORMAN_PUBLIC_PATHS && process.env.DOORMAN_PUBLIC_PATHS.split(',').map((path) => {
+    // If regular expresion filter is not present do not process
+    if (path.indexOf('|reg') === -1) {  
+      return path;
+    } else {
+      path = path.replace('|reg', '');
+    }
+    // otherwise assume its valid until proven guilty
+    let isValid = true;
+    let expression = null;
+    try {
+      // try to instantiate regular expression object 
+      expression = new RegExp(path);
+    } catch(e) {
+        // if exception was thrown it must be not valid expression
+        isValid = false;
+    }
+    return isValid ? expression : path;
+  }),
 
   modules: {} // populated individually below
 };
