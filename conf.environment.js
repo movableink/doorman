@@ -27,7 +27,7 @@ var conf = {
   // example: DOORMAN_PUBLIC_PATHS="/about/,/robots.txt"
   publicPaths: process.env.DOORMAN_PUBLIC_PATHS && process.env.DOORMAN_PUBLIC_PATHS.split(',').map((path) => {
     // If regular expresion filter is not present do not process
-    if (path.indexOf('|reg') !== -1) {  
+    if (path.indexOf('|reg') === -1) {  
       return path;
     } else {
       path = path.replace('|reg', '');
