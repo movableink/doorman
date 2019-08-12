@@ -1,12 +1,15 @@
-var config = require('../lib/config');
+var config = require("../lib/config");
 
 var domainNames = [];
-for(var domain in config.domains) {
+for (var domain in config.domains) {
   domainNames.push(config.domains[domain].domain);
 }
 
-module.exports = require('greenlock-express').create({
-  server: config.sslProd ? 'https://acme-v01.api.letsencrypt.org/directory' : 'staging',
+module.exports = require("greenlock-express").create({
+  version: "draft-11",
+  server: config.sslProd
+    ? "https://acme-v02.api.letsencrypt.org/directory"
+    : "https://acme-staging-v02.api.letsencrypt.org/directory",
   configDir: config.certDir,
   approveDomains: (opts, certs, cb) => {
     if (certs) {
@@ -19,7 +22,13 @@ module.exports = require('greenlock-express').create({
   },
   renewWithin: 30 * 24 * 60 * 60 * 1000,
   renewBy: 20 * 24 * 60 * 60 * 1000,
-  challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: config.certDir + '/acme-challege' }) },
-  store: require('le-store-certbot').create({ webrootPath: config.certDir + '/acme-challenge' }),
+  challenges: {
+    "http-01": require("le-challenge-fs").create({
+      webrootPath: config.certDir + "/acme-challege"
+    })
+  },
+  store: require("le-store-certbot").create({
+    webrootPath: config.certDir + "/acme-challenge"
+  }),
   debug: config.debugOutput
 });
