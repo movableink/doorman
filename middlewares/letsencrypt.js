@@ -11,6 +11,8 @@ module.exports = require("greenlock-express").create({
     ? "https://acme-v02.api.letsencrypt.org/directory"
     : "https://acme-staging-v02.api.letsencrypt.org/directory",
   configDir: config.certDir,
+  email: config.adminEmail,
+  agreeTos: true,
   approveDomains: domainNames,
   renewWithin: 30 * 24 * 60 * 60 * 1000,
   renewBy: 20 * 24 * 60 * 60 * 1000,
