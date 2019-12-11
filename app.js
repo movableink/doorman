@@ -59,6 +59,7 @@ function sessionMiddleware(req, res, next) {
 
 var domainMiddleware = Domain.setDomain(domains);
 
+app.use('/', letsencrypt.middleware());
 app.use(log);
 app.use(domainMiddleware);
 app.use(forceTLSMiddleware);
@@ -93,13 +94,13 @@ function upgradeWebsocket(server) {
   });
 }
 
-var httpServer = http.createServer(letsencrypt.middleware(app)).listen(config.port, function() {
+var httpServer = http.createServer(app).listen(config.port, function() {
   console.warn("Doorman on duty, listening on port " + config.port + ".");
 });
 upgradeWebsocket(httpServer);
 
 if(config.securePort) {
-  var httpsServer = https.createServer(letsencrypt.httpsOptions, letsencrypt.middleware(app)).listen(config.securePort, function() {
+  var httpsServer = https.createServer(letsencrypt.httpsOptions, app).listen(config.securePort, function() {
     console.warn("                 listening on secure port " + config.securePort + ".");
   });
   upgradeWebsocket(httpsServer);
