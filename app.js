@@ -1,41 +1,45 @@
-var config      = require('./lib/config');
-var fs          = require('fs');
-var http        = require('http');
-var https       = require('https');
-var express     = require('express');
-var bodyParser  = require('body-parser');
-var flash       = require('express-flash');
-var everyauth   = require('everyauth');
-var Domain      = require('./lib/domain');
-var log         = require('./middlewares/log');
-var letsencrypt = require('./middlewares/letsencrypt');
-var constants   = require('constants');
+const config = require("./lib/config");
+const http = require("http");
+const https = require("https");
+const express = require("express");
+const bodyParser = require("body-parser");
+const flash = require("express-flash");
+const everyauth = require("everyauth");
+const Domain = require("./lib/domain");
+const requestLogger = require("./middlewares/request_logger");
+const letsencrypt = require("./middlewares/letsencrypt");
+const log = require("./lib/log");
 
-var domains = {};
+let domains = {};
 
-for(var domainName in config.domains) {
-  var domainOptions = config.domains[domainName];
+for (let domainName in config.domains) {
+  let domainOptions = config.domains[domainName];
 
-  var domain = new Domain(domainOptions);
+  let domain = new Domain(domainOptions);
   domains[domainName] = domain;
 }
 
-function loginPage(req, res, next) {
-  if(req.url.indexOf("/_doorman/logout") == 0) {
-    if(req && req.session) { req.session.auth = null; }
+function loginPage(req, res) {
+  if (req.url.indexOf("/_doorman/logout") == 0) {
+    if (req && req.session) {
+      req.session.auth = null;
+    }
     res.redirect("/");
     return;
   }
 
-  if(req.query.error) {
-    req.flash('error', `The authentication method reports: ${req.query.error_description}`);
+  if (req.query.error) {
+    req.flash("error", `The authentication method reports: ${req.query.error_description}`);
   }
 
   req.session.redirectTo = req.originalUrl;
-  res.render('login.jade', { pageTitle: 'Login', providers: req.vdomain.enabled });
+  res.render("login.jade", {
+    pageTitle: "Login",
+    providers: req.vdomain.enabled
+  });
 }
 
-var app = express();
+let app = express();
 
 function forceTLSMiddleware(req, res, next) {
   req.vdomain.forceTLSMiddleware(req, res, next);
@@ -57,56 +61,75 @@ function sessionMiddleware(req, res, next) {
   req.vdomain.sessionMiddleware(req, res, next);
 }
 
-var domainMiddleware = Domain.setDomain(domains);
+const domainMiddleware = Domain.setDomain(domains);
 
-app.use('/', letsencrypt.middleware());
-app.use(log);
+app.use("/", letsencrypt.middleware());
+app.use(requestLogger);
 app.use(domainMiddleware);
 app.use(forceTLSMiddleware);
 app.use(cookieMiddleware);
 app.use(sessionMiddleware);
 app.use(flash());
 app.use(proxyMiddleware);
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(oauthMiddleware);
-app.use(express.static(__dirname + "/public", {maxAge: 0 }));
+app.use(express.static(`${__dirname}/public`, { maxAge: 0 }));
 app.use(loginPage);
 
 // Uncaught error states
-app.on('error', function(err) {
-  console.error(err);
+app.on("error", function(err) {
+  log.error({
+    message: "Uncaught Error",
+    error: err
+  });
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  data.req.flash('error', "Perhaps something is misconfigured, or the provider is down.");
-  data.res.redirectTo('/');
+  data.req.flash("error", "Perhaps something is misconfigured, or the provider is down.");
+  data.res.redirectTo("/");
 });
 
 // We don't actually use this
-everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); });
+everyauth.everymodule.findUserById(function(userId, callback) {
+  callback(userId);
+});
 
 function upgradeWebsocket(server) {
   // WebSockets are also authenticated
-  server.on('upgrade', function(req, socket, head) {
+  server.on("upgrade", function(req, socket, head) {
     domainMiddleware(req, null, function() {
       req.vdomain.upgrade(req, socket, head);
     });
   });
 }
 
-var httpServer = http.createServer(app).listen(config.port, function() {
-  console.warn(`Doorman on duty, listening on port ${config.port}.`);
+let httpServer = http.createServer(app).listen(config.port, function() {
+  log.warn({
+    message: "Doorman on duty",
+    protocol: "http",
+    port: config.port
+  });
 });
 upgradeWebsocket(httpServer);
 
-if(config.securePort) {
-  var httpsServer = https.createServer(letsencrypt.httpsOptions, app).listen(config.securePort, function() {
-    console.warn(`                 listening on secure port ${config.securePort}.`);
-  });
+if (config.securePort) {
+  let httpsServer = https
+    .createServer(letsencrypt.httpsOptions, app)
+    .listen(config.securePort, function() {
+      log.warn({
+        message: "Listening on secure port",
+        protocol: "https",
+        port: config.securePort
+      });
+    });
   upgradeWebsocket(httpsServer);
 }
 
-for(var d in domains) {
-  var domain = domains[d];
-  console.warn(`Proxying domain ${domain.options.domain} to ${domain.options.proxyTo.host}:${domain.options.proxyTo.port}.`);
+for (let d in domains) {
+  let domain = domains[d];
+  log.warn({
+    message: "Proxying domain",
+    domain: domain.options.domain,
+    proxyTo: domain.options.proxyTo
+  });
 }
