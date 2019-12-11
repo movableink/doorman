@@ -1,5 +1,4 @@
 const config = require("./lib/config");
-const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const express = require("express");
@@ -9,7 +8,6 @@ const everyauth = require("everyauth");
 const Domain = require("./lib/domain");
 const requestLogger = require("./middlewares/request_logger");
 const letsencrypt = require("./middlewares/letsencrypt");
-const constants = require("constants");
 const log = require("./lib/log");
 
 let domains = {};
@@ -21,7 +19,7 @@ for (let domainName in config.domains) {
   domains[domainName] = domain;
 }
 
-function loginPage(req, res, next) {
+function loginPage(req, res) {
   if (req.url.indexOf("/_doorman/logout") == 0) {
     if (req && req.session) {
       req.session.auth = null;
@@ -31,10 +29,7 @@ function loginPage(req, res, next) {
   }
 
   if (req.query.error) {
-    req.flash(
-      "error",
-      `The authentication method reports: ${req.query.error_description}`
-    );
+    req.flash("error", `The authentication method reports: ${req.query.error_description}`);
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -78,7 +73,7 @@ app.use(flash());
 app.use(proxyMiddleware);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(oauthMiddleware);
-app.use(express.static(__dirname + "/public", { maxAge: 0 }));
+app.use(express.static(`${__dirname}/public`, { maxAge: 0 }));
 app.use(loginPage);
 
 // Uncaught error states
@@ -90,10 +85,7 @@ app.on("error", function(err) {
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
-  data.req.flash(
-    "error",
-    "Perhaps something is misconfigured, or the provider is down."
-  );
+  data.req.flash("error", "Perhaps something is misconfigured, or the provider is down.");
   data.res.redirectTo("/");
 });
 

@@ -14,9 +14,11 @@
     "url": "http://github.com/movableink/doorman.git"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "eslint ."
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "1.8.0",
     "commander": "2.5.0",
     "cookie-parser": "^1.4.4",
@@ -27,7 +29,8 @@
     "greenlock-express": "2.7.12",
     "http-proxy": "1.11.1",
     "jade": "1.6.0",
-    "bluebird": "^3.5.1",
+    "le-challenge-fs": "^2.0.9",
+    "le-store-certbot": "^2.2.3",
     "morgan": "^1.9.1"
   },
   "engines": {
@@ -37,6 +40,12 @@
     "url": "https://github.com/movableink/doorman/issues"
   },
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1"
+  },
   "license": "MIT"
 }

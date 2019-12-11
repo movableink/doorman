@@ -1,3 +1,4 @@
+const process = require("process");
 const morgan = require("morgan");
 
 morgan.token("pid", function getPid() {
