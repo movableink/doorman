@@ -1,6 +1,6 @@
 {
   "name": "doorman-proxy",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Provides an authentication/authorization layer in front of other http/websocket services",
   "keywords": [
     "oauth",
@@ -28,6 +28,9 @@
     "http-proxy": "1.11.1",
     "jade": "1.6.0",
     "bluebird": "^3.5.1"
+  },
+  "engines": {
+    "node": ">=10.12"
   },
   "bugs": {
     "url": "https://github.com/movableink/doorman/issues"
