@@ -1,8 +1,24 @@
-module.exports = function log(req, res, next) {
-  var date = new Date().toISOString();
+const morgan = require("morgan");
 
-  console.log([date,
-               req.method,
-               req.url].join(' '));
-  next();
+morgan.token("pid", function getPid() {
+  return process.pid;
+});
+
+function jsonFormat(tokens, req, res) {
+  return JSON.stringify({
+    remoteAddress: tokens["remote-addr"](req, res),
+    host: tokens["req"](req, res, "host"),
+    time: tokens["date"](req, res, "iso"),
+    method: tokens["method"](req, res),
+    url: tokens["url"](req, res),
+    httpVersion: tokens["http-version"](req, res),
+    statusCode: tokens["status"](req, res),
+    contentLength: tokens["res"](req, res, "content-length"),
+    referrer: tokens["referrer"](req, res),
+    userAgent: tokens["user-agent"](req, res),
+    responseTime: tokens["response-time"](req, res),
+    pid: tokens["pid"](req, res)
+  });
 }
+
+module.exports = morgan(jsonFormat);
