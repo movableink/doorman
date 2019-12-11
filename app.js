@@ -28,7 +28,7 @@ function loginPage(req, res, next) {
   }
 
   if(req.query.error) {
-    req.flash('error', "The authentication method reports: " + req.query.error_description);
+    req.flash('error', `The authentication method reports: ${req.query.error_description}`);
   }
 
   req.session.redirectTo = req.originalUrl;
@@ -95,18 +95,18 @@ function upgradeWebsocket(server) {
 }
 
 var httpServer = http.createServer(app).listen(config.port, function() {
-  console.warn("Doorman on duty, listening on port " + config.port + ".");
+  console.warn(`Doorman on duty, listening on port ${config.port}.`);
 });
 upgradeWebsocket(httpServer);
 
 if(config.securePort) {
   var httpsServer = https.createServer(letsencrypt.httpsOptions, app).listen(config.securePort, function() {
-    console.warn("                 listening on secure port " + config.securePort + ".");
+    console.warn(`                 listening on secure port ${config.securePort}.`);
   });
   upgradeWebsocket(httpsServer);
 }
 
 for(var d in domains) {
   var domain = domains[d];
-  console.warn("Proxying domain " + domain.options.domain + " to " + domain.options.proxyTo.host + ":" + domain.options.proxyTo.port + ".");
+  console.warn(`Proxying domain ${domain.options.domain} to ${domain.options.proxyTo.host}:${domain.options.proxyTo.port}.`);
 }
