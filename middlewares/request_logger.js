@@ -8,7 +8,7 @@ function jsonFormat(tokens, req, res) {
   return JSON.stringify({
     remoteAddress: tokens["remote-addr"](req, res),
     host: tokens["req"](req, res, "host"),
-    time: tokens["date"](req, res, "iso"),
+    date: tokens["date"](req, res, "iso"),
     method: tokens["method"](req, res),
     url: tokens["url"](req, res),
     httpVersion: tokens["http-version"](req, res),

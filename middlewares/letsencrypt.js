@@ -1,7 +1,7 @@
-var config = require("../lib/config");
+const config = require("../lib/config");
 
-var domainNames = [];
-for (var domain in config.domains) {
+let domainNames = [];
+for (let domain in config.domains) {
   domainNames.push(config.domains[domain].domain);
 }
 
