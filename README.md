@@ -13,17 +13,15 @@ delegate your internal app's authentication/authorization to that app?
 Requirements
 ------------
 
- * node.js >= 4.4.4 (Earlier versions are susceptible to [CVE-2016-2107](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-2107)
-
+ * node.js >= 10.12
 
 Installation
 ------------
 
-  * `npm install`
+  * `yarn install`
   * copy config/app.js.example to config/app.js and modify
   * copy config/domains/default.js.example to config/domains/default.js and modify
-  * `npm start`
-
+  * `yarn start`
 
 Strategies
 ----------
@@ -44,7 +42,10 @@ config/domains/*.js. The 'default' domain is special; it is a catch-all for when
 none of the other domains are matched.  If you only have one service behind doorman
 you can just use the 'default' domain.
 
+HTTPS
+-----
 
+Doorman uses Let's Encrypt to secure its domains with TLS.  Certificates are obtained and renewed automatically. 
 Acknowledgements
 ----------------
 

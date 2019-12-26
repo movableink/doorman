@@ -4,7 +4,9 @@ module.exports = {
 
   // Uncomment for HTTPS
   // securePort: 443,
-  // sslDomains: ['domainone.com', 'domaintwo.org', 'domainthree.net'],
+  // forceTLS: true,  // Redirect all requests to HTTPS
+  // sslProd: true,   // Use Production Let's Encrypt API?
+  // certDir: 'certs',
   // adminEmail: 'admin@yourdomain.com'
 
   // Uncomment for Let's Encrypt debug output
