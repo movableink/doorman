@@ -4,9 +4,9 @@ module.exports = {
 
   // Uncomment for HTTPS
   // securePort: 443,
-  // ssl: {
-  //   keyFile:  'path/to/certificate.key',
-  //   certFile: 'path/to/certificate.crt',
-  //   caFile: 'path/to/intermediate.crt' // optional intermediate CAfile
-  // }
+  // sslDomains: ['domainone.com', 'domaintwo.org', 'domainthree.net'],
+  // adminEmail: 'admin@yourdomain.com'
+
+  // Uncomment for Let's Encrypt debug output
+  // debugOutput: true
 };
