@@ -28,7 +28,7 @@ Installation
 Strategies
 ----------
 
-Doorman uses [everyauth](https://github.com/bnoguchi/everyauth) for authenticating,
+Doorman uses [passport](http://www.passportjs.org/) for authenticating,
 so it supports a wide variety of providers for authentication.  For authorization,
 we need to determine which authenticated users to let in. (see `lib/modules`) So
 far only the Github, Google Apps, and Password modules are complete, but others are
@@ -48,7 +48,7 @@ you can just use the 'default' domain.
 Acknowledgements
 ----------------
 
-Doorman is pretty much just everyauth (https://github.com/bnoguchi/everyauth) and
+Doorman is pretty much just passport (http://www.passportjs.org/) and
 node-http-proxy (https://github.com/nodejitsu/node-http-proxy) grafted together,
 and those two projects do most of the heavy lifting.
 
