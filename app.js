@@ -4,77 +4,71 @@ const https = require("https");
 const express = require("express");
 const bodyParser = require("body-parser");
 const flash = require("express-flash");
-const everyauth = require("everyauth");
-const Domain = require("./lib/domain");
 const requestLogger = require("./middlewares/request_logger");
 const setDomain = require("./middlewares/set_domain");
 const letsencrypt = require("./middlewares/letsencrypt");
 const log = require("./lib/log");
+const passport = require("passport");
+const ProxyDomain = require("./lib/proxy_domain");
 
-let domains = {};
+const createDomains = () => {
+  let domains = {};
+  for (var domainName in config.domains) {
+    var domainOptions = config.domains[domainName];
 
-for (let domainName in config.domains) {
-  let domainOptions = config.domains[domainName];
+    var domain = new ProxyDomain(domainOptions);
+    domains[domainName] = domain;
+  }
+  return domains;
+};
+const domains = createDomains();
 
-  let domain = new Domain(domainOptions);
-  domains[domainName] = domain;
-}
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
 
-function loginPage(req, res) {
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+const app = express();
+const domainMiddleware = setDomain(domains);
+app.set("view engine", "pug");
+app.use("/", letsencrypt.middleware());
+app.use(requestLogger);
+app.use(express.static(__dirname + "/public", { maxAge: 0 }));
+app.use(domainMiddleware);
+app.use((req, res, next) => req.vdomain.tls(req, res, next));
+app.use((req, res, next) => req.vdomain.cookies(req, res, next));
+app.use((req, res, next) => req.vdomain.sessions(req, res, next));
+app.use(passport.initialize());
+app.use((req, res, next) => {
+  if (req.url != "/favicon.ico") {
+    passport.session()(req, res, next);
+  } else {
+    next();
+  }
+});
+app.use(flash());
+app.use((req, res, next) => req.vdomain.forward(req, res, next));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use((req, res, next) => req.vdomain.authenticate(req, res, next));
+app.use(function loginPage(req, res) {
   if (req.url.indexOf("/_doorman/logout") == 0) {
     if (req && req.session) {
-      req.session.auth = null;
+      req.session.passport = null;
     }
     res.redirect("/");
     return;
   }
-
-  if (req.query.error) {
-    req.flash("error", `The authentication method reports: ${req.query.error_description}`);
-  }
-
   req.session.redirectTo = req.originalUrl;
-  res.render("login.pug", {
-    pageTitle: "Login",
-    providers: req.vdomain.enabled
-  });
-}
+  res.render("login.pug", { pageTitle: "Login", providers: req.vdomain.enabled });
+});
 
-let app = express();
-
-function forceTLSMiddleware(req, res, next) {
-  req.vdomain.forceTLSMiddleware(req, res, next);
-}
-
-function proxyMiddleware(req, res, next) {
-  req.vdomain.proxyMiddleware(req, res, next);
-}
-
-function oauthMiddleware(req, res, next) {
-  req.vdomain.oauthMiddleware(req, res, next);
-}
-
-function cookieMiddleware(req, res, next) {
-  req.vdomain.cookieMiddleware(req, res, next);
-}
-
-function sessionMiddleware(req, res, next) {
-  req.vdomain.sessionMiddleware(req, res, next);
-}
-
-
-app.use("/", letsencrypt.middleware());
-app.use(requestLogger);
-app.use(setDomain(domains));
-app.use(forceTLSMiddleware);
-app.use(cookieMiddleware);
-app.use(sessionMiddleware);
-app.use(flash());
-app.use(proxyMiddleware);
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(oauthMiddleware);
-app.use(express.static(`${__dirname}/public`, { maxAge: 0 }));
-app.use(loginPage);
+app.use((err, req, res) => {
+  req.flash("error", `The authentication method reports: ${err.message}`);
+  res.redirect("/");
+});
 
 // Uncaught error states
 app.on("error", function(err) {
@@ -82,16 +76,6 @@ app.on("error", function(err) {
     message: "Uncaught Error",
     error: err
   });
-});
-
-everyauth.everymodule.moduleErrback(function(err, data) {
-  data.req.flash("error", "Perhaps something is misconfigured, or the provider is down.");
-  data.res.redirectTo("/");
-});
-
-// We don't actually use this
-everyauth.everymodule.findUserById(function(userId, callback) {
-  callback(userId);
 });
 
 function upgradeWebsocket(server) {
