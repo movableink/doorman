@@ -7,6 +7,7 @@ const flash = require("express-flash");
 const everyauth = require("everyauth");
 const Domain = require("./lib/domain");
 const requestLogger = require("./middlewares/request_logger");
+const setDomain = require("./middlewares/set_domain");
 const letsencrypt = require("./middlewares/letsencrypt");
 const log = require("./lib/log");
 
@@ -33,7 +34,7 @@ function loginPage(req, res) {
   }
 
   req.session.redirectTo = req.originalUrl;
-  res.render("login.jade", {
+  res.render("login.pug", {
     pageTitle: "Login",
     providers: req.vdomain.enabled
   });
@@ -61,11 +62,10 @@ function sessionMiddleware(req, res, next) {
   req.vdomain.sessionMiddleware(req, res, next);
 }
 
-const domainMiddleware = Domain.setDomain(domains);
 
 app.use("/", letsencrypt.middleware());
 app.use(requestLogger);
-app.use(domainMiddleware);
+app.use(setDomain(domains));
 app.use(forceTLSMiddleware);
 app.use(cookieMiddleware);
 app.use(sessionMiddleware);

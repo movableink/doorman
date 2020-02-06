@@ -31,7 +31,14 @@
     "jade": "1.6.0",
     "le-challenge-fs": "^2.0.9",
     "le-store-certbot": "^2.2.3",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "passport": "^0.4.1",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-local-token": "^1.0.1",
+    "pug": "^2.0.4",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.8"
   },
   "engines": {
     "node": ">=10.12"

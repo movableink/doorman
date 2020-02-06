@@ -15,5 +15,5 @@ block content
   #provider-list
     each provider, name in providers
       a.button(href=provider._entryPath)
-        img(src="/_doorman/icons/#{name}.ico.png")
+        img(src="/_doorman/icons/" + name + ".ico.png")
         | Sign in with #{provider.title || name}
