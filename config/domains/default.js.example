@@ -47,6 +47,9 @@ module.exports = {
       // Only users with this organization name can authenticate. If an array is
       // listed, user may authenticate as a member of ANY of the domains.
       requiredOrganization: 'YOUR-ORGANIZATION-NAME' // short organization name
+
+      // List of github teams that can authenticate
+      // requiredTeam: ['developers']
     },
 
     // Simple password login, make sure you choose a very secure password.
