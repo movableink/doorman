@@ -18,7 +18,7 @@ module.exports = require("greenlock-express").create({
   renewBy: 20 * 24 * 60 * 60 * 1000,
   challenges: {
     "http-01": require("le-challenge-fs").create({
-      webrootPath: config.certDir + "/acme-challege"
+      webrootPath: config.certDir + "/acme-challenge"
     })
   },
   store: require("le-store-certbot").create({
