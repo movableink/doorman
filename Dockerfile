@@ -1,12 +1,9 @@
-FROM node
+FROM node:12.14.1-alpine3.10
 
 ADD . /doorman
 
-RUN \
-  cd /doorman && \
-  npm install && \
-  mv conf.environment.js conf.js
-
 WORKDIR /doorman
 
-ENTRYPOINT [ "npm", "start" ]
+RUN rm -rf node_modules && yarn
+
+ENTRYPOINT ["node", "app.js"]
