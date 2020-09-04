@@ -24,7 +24,7 @@
     "express-flash": "0.0.2",
     "everyauth": "0.4.9",
     "express": "4.8.8",
-    "http-proxy": "1.11.1",
+    "http-proxy": "1.18.1",
     "jade": "1.6.0"
   },
   "bugs": {
