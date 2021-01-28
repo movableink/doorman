@@ -1,6 +1,7 @@
 const config = require("./lib/config");
 const http = require("http");
 const https = require("https");
+const { constants } = require("crypto");
 const express = require("express");
 const bodyParser = require("body-parser");
 const flash = require("express-flash");
@@ -96,16 +97,24 @@ let httpServer = http.createServer(app).listen(config.port, function() {
 });
 upgradeWebsocket(httpServer);
 
+const httpsOptions = Object.assign(
+  {
+    secureOptions:
+      constants.SSL_OP_NO_SSLv2 |
+      constants.SSL_OP_NO_SSLv3 |
+      constants.SSL_OP_NO_TLSv1 |
+      constants.SSL_OP_NO_TLSv1_1
+  },
+  letsencrypt.httpsOptions
+);
 if (config.securePort) {
-  let httpsServer = https
-    .createServer(letsencrypt.httpsOptions, app)
-    .listen(config.securePort, function() {
-      log.warn({
-        message: "Listening on secure port",
-        protocol: "https",
-        port: config.securePort
-      });
+  let httpsServer = https.createServer(httpsOptions, app).listen(config.securePort, function() {
+    log.warn({
+      message: "Listening on secure port",
+      protocol: "https",
+      port: config.securePort
     });
+  });
   upgradeWebsocket(httpsServer);
 }
 
