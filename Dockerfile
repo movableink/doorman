@@ -4,6 +4,6 @@ ADD . /doorman
 
 WORKDIR /doorman
 
-RUN rm -rf node_modules && yarn
+RUN rm -rf node_modules && yarn install --frozen-lockfile
 
 ENTRYPOINT ["node", "app.js"]
