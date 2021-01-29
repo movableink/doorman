@@ -55,6 +55,8 @@ module.exports = {
     // Simple password login, make sure you choose a very secure password.
     // password: {
     //  token: "YOUR-PASSWORD" // any user that knows this can log in
+    //     -- or --
+    //  tokens: ["ONE-PASSWORD", "ANOTHER-PASSWORD"] // either of these can be used
     // },
 
     // Register a new oauth app on Google Apps at
