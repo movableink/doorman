@@ -18,6 +18,7 @@
     "test": "eslint ."
   },
   "dependencies": {
+    "agentkeepalive": "^4.1.4",
     "bluebird": "^3.5.1",
     "body-parser": "1.8.0",
     "commander": "2.5.0",
@@ -26,7 +27,7 @@
     "express": "^4.16.4",
     "express-flash": "0.0.2",
     "greenlock-express": "2.7.12",
-    "http-proxy": "1.11.1",
+    "http-proxy": "1.18.1",
     "le-challenge-fs": "^2.0.9",
     "le-store-certbot": "^2.2.3",
     "morgan": "^1.9.1",
