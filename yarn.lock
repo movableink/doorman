@@ -1064,7 +1064,7 @@ globals@^12.1.0:
   dependencies:
     type-fest "^0.8.1"
 
-greenlock-express@v4:
+greenlock-express@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/greenlock-express/-/greenlock-express-4.0.3.tgz#6da7d975c9985173577443faef1664b0664b3328"
   integrity sha512-swTCuaLcZWbwRe9gf28AN1VO2PLiAoPB7StVhEFTBqCqqoHgiu0PJqdz3IbnfXB/8Kckx4sZ+B+Re2BvoCHY4A==
