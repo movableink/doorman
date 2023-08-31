@@ -1392,15 +1392,6 @@ le-challenge-fs@^2.0.9:
   dependencies:
     "@root/mkdirp" "^1.0.0"
 
-le-store-certbot@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.npmjs.org/le-store-certbot/-/le-store-certbot-2.2.3.tgz"
-  integrity sha512-c4ACR+v+JKMiAOOshLh6gdCKA7wIWR16+mROMLpQjq3rXJ3Vm8FaBHe2H+crT+flP+g7FmciAwUlfOJEJpIuCQ==
-  dependencies:
-    "@root/mkdirp" "^1.0.0"
-    pyconf "^1.1.7"
-    safe-replace "^1.1.0"
-
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/levn/-/levn-0.3.0.tgz"
@@ -1878,13 +1869,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.0.tgz"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
-pyconf@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.npmjs.org/pyconf/-/pyconf-1.1.7.tgz"
-  integrity sha512-v4clh33m68sjtMsh8XMpjhGWb/MQODAYZ1y7ORG5Qv58UK25OddoB+oXyexgDkK8ttFui/lZm2sQDgA2Ftjfkw==
-  dependencies:
-    safe-replace "^1.0.2"
-
 qs@2.2.3:
   version "2.2.3"
   resolved "https://registry.npmjs.org/qs/-/qs-2.2.3.tgz"
@@ -2057,7 +2041,7 @@ safe-buffer@5.2.1, safe-buffer@^5.0.1, safe-buffer@^5.1.2:
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
 
-safe-replace@^1.0.2, safe-replace@^1.1.0:
+safe-replace@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/safe-replace/-/safe-replace-1.1.0.tgz"
   integrity sha512-9/V2E0CDsKs9DWOOwJH7jYpSl9S3N05uyevNjvsnDauBqRowBPOyot1fIvV5N2IuZAbYyvrTXrYFVG0RZInfFw==

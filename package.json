@@ -28,7 +28,6 @@
     "greenlock-express": "^4.0.3",
     "http-proxy": "1.18.1",
     "le-challenge-fs": "^2.0.9",
-    "le-store-certbot": "^2.2.3",
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
     "passport-github": "^1.1.0",
