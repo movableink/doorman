@@ -25,7 +25,7 @@
     "cookie-session": "1.0.2",
     "express": "^4.16.4",
     "express-flash": "0.0.2",
-    "greenlock-express": "2.7.12",
+    "greenlock-express": "4.04",
     "http-proxy": "1.18.1",
     "le-challenge-fs": "^2.0.9",
     "le-store-certbot": "^2.2.3",
